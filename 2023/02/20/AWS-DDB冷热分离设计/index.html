@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guyver.icu","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="背景公司早期业务快速增长时，出于运维成本、稳定性和性能考虑，选择公有云部署。由于和小米工作合作紧密且小米生态云优惠力度大，早期部署在小米生态云上。其中核心健康数据规模大，增长快，业务变化快，字段灵活，但查询条件简单，技术选型使用NoSQL数据库SDS。但随着业务发展越来越大，小米生态云的稳定性问题暴露出来，为了保障用户体验和提高服务可用性，公司选择了在全球范围内更加成熟稳定的亚马逊AWS，对标的N">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWS DDB冷热分离设计">
+<meta property="og:url" content="https://guyver.icu/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="Guyver&#39;s Blogs">
+<meta property="og:description" content="背景公司早期业务快速增长时，出于运维成本、稳定性和性能考虑，选择公有云部署。由于和小米工作合作紧密且小米生态云优惠力度大，早期部署在小米生态云上。其中核心健康数据规模大，增长快，业务变化快，字段灵活，但查询条件简单，技术选型使用NoSQL数据库SDS。但随着业务发展越来越大，小米生态云的稳定性问题暴露出来，为了保障用户体验和提高服务可用性，公司选择了在全球范围内更加成熟稳定的亚马逊AWS，对标的N">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/2023-02-19-16-20-25.png">
+<meta property="article:published_time" content="2023-02-20T15:14:18.000Z">
+<meta property="article:modified_time" content="2023-02-24T03:31:39.357Z">
+<meta property="article:author" content="Guyver">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/2023-02-19-16-20-25.png">
+
+
+<link rel="canonical" href="https://guyver.icu/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guyver.icu/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/","path":"2023/02/20/AWS-DDB冷热分离设计/","title":"AWS DDB冷热分离设计"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AWS DDB冷热分离设计 | Guyver's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Guyver's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%B7%E5%AD%98%E5%82%A8%E5%A6%82%E4%BD%95%E9%80%89%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">冷存储如何选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E7%A8%8B%E5%BA%8F%E5%A6%82%E4%BD%95%E6%94%B9%E9%80%A0"><span class="nav-number">3.2.</span> <span class="nav-text">业务程序如何改造</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E6%95%B0%E6%8D%AE%E5%A6%82%E4%BD%95%E8%BD%AC%E7%A7%BB%E5%88%B0%E5%86%B7%E5%AD%98%E5%82%A8"><span class="nav-number">3.3.</span> <span class="nav-text">增量数据如何转移到冷存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E9%87%8F%E6%95%B0%E6%8D%AE%E5%A6%82%E4%BD%95%E8%BD%AC%E7%A7%BB%E5%88%B0%E5%86%B7%E5%AD%98%E5%82%A8"><span class="nav-number">3.4.</span> <span class="nav-text">存量数据如何转移到冷存储</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Guyver</p>
+  <div class="site-description" itemprop="description">没有困难的任务，只有勇敢的狗狗</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guyver.icu/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Guyver">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Guyver's Blogs">
+      <meta itemprop="description" content="没有困难的任务，只有勇敢的狗狗">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="AWS DDB冷热分离设计 | Guyver's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AWS DDB冷热分离设计
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2023-02-20 23:14:18" itemprop="dateCreated datePublished" datetime="2023-02-20T23:14:18+08:00">2023-02-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-24 11:31:39" itemprop="dateModified" datetime="2023-02-24T11:31:39+08:00">2023-02-24</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>公司早期业务快速增长时，出于运维成本、稳定性和性能考虑，选择公有云部署。由于和小米工作合作紧密且小米生态云优惠力度大，早期部署在<a target="_blank" rel="noopener" href="https://cnbj6.cloud.mi.com/">小米生态云</a>上。其中核心健康数据规模大，增长快，业务变化快，字段灵活，但查询条件简单，技术选型使用<a target="_blank" rel="noopener" href="https://cnbj6.cloud.mi.com/#/index/product/sds">NoSQL数据库SDS</a>。<br>但随着业务发展越来越大，小米生态云的稳定性问题暴露出来，为了保障用户体验和提高服务可用性，公司选择了在全球范围内更加成熟稳定的<a target="_blank" rel="noopener" href="https://aws.amazon.com/">亚马逊AWS</a>，对标的NoSQL数据库是<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/dynamodb/">AWS DynamoDB</a>，但<strong>AWS DDB费用较贵，于是在迁移云服务更换数据库时，对底层存储设计进行优化升级</strong>。</p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>在迁移云时，由于是toC业务，需要保证用户体验，不能停服割接，采用<strong>蚂蚁搬家</strong>的方式，针对每个用户逐一进行迁移，迁移过程中，冻结用户操作，对用户仅有分钟级的影响，甚至仅影响写操作，不影响读。<br>虽然按用户迁移耗时长，费用高，但过程可控，风险低，一边灰度一边观察用户反馈，迁移云过程不是本文重点，不做详细描述。<br>AWS DDB存储费用相比IOPS高很多，存在明显的优化空间。在业务趋势稳定后，以降费为目标，对<strong>云端服务费用进行分析和优化</strong>。<br>对数据的读写进行监控，发现数据读写呈现出明显的冷热分界，且在SDS上表现确实存储费用占比较大，属于典型的冷热数据。AWS DDB针对冷热场景提供了<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/dynamodb/dynamodb-standard-ia/">DDB IA模式</a>，Storage&#x2F;IOPS费用比超过6:4，即可启用IA进行降费，但通过计算，使用<strong>冷热分离方案降费更优</strong>。</p>
+<h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><p>冷热分离有以下几个问题需要解决</p>
+<ul>
+<li>冷存储如何选型</li>
+<li>业务程序如何改造</li>
+<li>增量数据如何转移到冷存储</li>
+<li>存量数据如何转移到冷存储</li>
+</ul>
+<h2 id="冷存储如何选型"><a href="#冷存储如何选型" class="headerlink" title="冷存储如何选型"></a>冷存储如何选型</h2><p>取决于成本、业务程序查询是否方便、增量数据转移是否方便，通过和AWS架构师的深入交流，详细分析了AWS托管的各种存储特性和成本模型，冷存储选型决定使用<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/s3/">AWS S3</a>。</p>
+<h2 id="业务程序如何改造"><a href="#业务程序如何改造" class="headerlink" title="业务程序如何改造"></a>业务程序如何改造</h2><p>健康数据的查询，多是以周、双周、月、年粒度，考虑到S3的费用按查询次数计费，内网调用没有出网流量费用，管理和分析等其他功能多是和文件数正相关，文件粒度不宜太小。但太大的文件，业务程序查询时，需要加载文件到内存中，会给JVM内存要求高且费用会上升，综合考虑，<strong>以年为单位存储用户冷数据</strong>。<br>通过对数据的查询时间范围做分析，<strong>以365天做冷热分界点</strong>，业务程序在查询近期数据时，使用DDB，查询历史数据是，使用S3。</p>
+<h2 id="增量数据如何转移到冷存储"><a href="#增量数据如何转移到冷存储" class="headerlink" title="增量数据如何转移到冷存储"></a>增量数据如何转移到冷存储</h2><p>DDB到S3的数据转移，AWS提供了成熟的方案，利用DDB TTL特性，数据过期后将从数据库中移除，可以通过<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/lambda">AWS Lambda</a>对接Dynamo DDB Stream，拿到被移除的数据，写入S3中。<br>每天近千万的数据过期，被转移到S3中，过期时间虽有波峰波谷，但不至过于集中产生毛刺，使用AWS Lambda支持自动扩缩容，S3吞吐量也支持自动扩容，性能和稳定性有保障。<br>在可用性方面，AWS Lambda支持消费retry和死信队列，也支持配置AWS Cloud Watch监控和告警。</p>
+<p><img src="/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/2023-02-19-16-20-25.png"></p>
+<h2 id="存量数据如何转移到冷存储"><a href="#存量数据如何转移到冷存储" class="headerlink" title="存量数据如何转移到冷存储"></a>存量数据如何转移到冷存储</h2><p>由于迁移云是用户粒度的迁移，在一个用户的数据被完整的导入另一个区时，先写入DDB，然后根据数据的时间字段，设置TTL，如果是冷数据，将会很快被淘汰到S3中，热数据仍然会保留在DDB中，等待自然冷却。<br>AWS DDB不同于一般的云托管数据库，并不是按资源配置收费，而是按用量收费，主要费用是存储、IOPS和其他分析管理费用，其中写（增删改）单价是读单价的20~40倍。如果不是趁着迁移云时给存量数据设计TTL，迁移后如果再想修改TTL，则相当于对全量数据进行一次写操作，<strong>收费极其昂贵</strong>。<br>事后分析迁移云费用时，发现让历史数据先入DDB再走冷却流程，会耗费DDB写和Lambda费用，后续其他数据中心的云迁移中，对此在进行了优化，在迁移程序中，直接将历史数据中的冷数据部分直接写入S3，由于冷数据占比大，仅此一项，直接节约5成数据迁移费用。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>存储费用高昂，业务上数据冷热特征明显，冷热分离是比较容易想到的常规方案。<br>挑战在于如何在较大数据规模下，如何对用户无感地灰度上线，以及兼顾费用成本、维护成本、改造成本、方案在不同云上的兼容性，综合考虑出一个合理的方案。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/24/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/" rel="next" title="AWS DDB冷热分离设计升级版">
+                  AWS DDB冷热分离设计升级版 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Guyver</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

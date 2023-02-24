@@ -19,25 +19,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"guyver.icu","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="没有困难的任务，只有勇敢的狗狗">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Guyver&#39;s Blogs">
-<meta property="og:url" content="https://guyver.icu/index.html">
+    <meta name="description" content="背景距离上一次冷热分离，过去两年，数据量进一步膨胀，但业务趋于稳定，降本增效成了此时的重点工作。系统主要是C&#x2F;S架构，为了降本，我们下调了客户端同步数据的频率，以便减少对数据库的读写费用。 分析重新分析一次费用结构  由于降频后读写费用下降，AWS DDB存储费用又成了费用大户，业务场景上偏向于写多读少，即使每次业务查询都依赖S3费用也不高。 TTL过期机制，导致每个用户每天都会有一条数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AWS DDB冷热分离设计升级版">
+<meta property="og:url" content="https://guyver.icu/2023/02/24/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/index.html">
 <meta property="og:site_name" content="Guyver&#39;s Blogs">
-<meta property="og:description" content="没有困难的任务，只有勇敢的狗狗">
+<meta property="og:description" content="背景距离上一次冷热分离，过去两年，数据量进一步膨胀，但业务趋于稳定，降本增效成了此时的重点工作。系统主要是C&#x2F;S架构，为了降本，我们下调了客户端同步数据的频率，以便减少对数据库的读写费用。 分析重新分析一次费用结构  由于降频后读写费用下降，AWS DDB存储费用又成了费用大户，业务场景上偏向于写多读少，即使每次业务查询都依赖S3费用也不高。 TTL过期机制，导致每个用户每天都会有一条数">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png">
+<meta property="og:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-15-41.png">
+<meta property="article:published_time" content="2023-02-24T03:08:41.000Z">
+<meta property="article:modified_time" content="2023-02-24T03:36:46.559Z">
 <meta property="article:author" content="Guyver">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png">
 
 
-<link rel="canonical" href="https://guyver.icu/">
+<link rel="canonical" href="https://guyver.icu/2023/02/24/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"en","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guyver.icu/2023/02/24/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/","path":"2023/02/24/AWS-DDB冷热分离设计升级版/","title":"AWS DDB冷热分离设计升级版"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Guyver's Blogs</title>
+<title>AWS DDB冷热分离设计升级版 | Guyver's Blogs</title>
   
 
 
@@ -67,7 +72,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Guyver's Blogs</h1>
+      <p class="site-title">Guyver's Blogs</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -89,7 +94,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -102,6 +107,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80-%E6%89%B9%E9%87%8F%E5%90%88%E5%B9%B6"><span class="nav-number">3.1.</span> <span class="nav-text">方案一 批量合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C-%E6%8F%90%E5%89%8D%E5%90%88%E5%B9%B6"><span class="nav-number">3.2.</span> <span class="nav-text">方案二 提前合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89-%E6%9A%82%E5%AD%98%E5%90%88%E5%B9%B6"><span class="nav-number">3.3.</span> <span class="nav-text">方案三 暂存合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E6%8E%A8%E8%8D%90%EF%BC%89%E6%96%B9%E6%A1%88%E5%9B%9B-%E5%AE%9A%E6%97%B6%E5%90%88%E5%B9%B6"><span class="nav-number">3.4.</span> <span class="nav-text">（推荐）方案四 定时合并</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E6%96%BD"><span class="nav-number">4.</span> <span class="nav-text">实施</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BD%92%E6%A1%A3"><span class="nav-number">4.0.1.</span> <span class="nav-text">存量数据归档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E7%BA%BF%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.0.2.</span> <span class="nav-text">上线步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">4.0.3.</span> <span class="nav-text">备份恢复</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.1.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -131,16 +137,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="https://guyver.icu/2023/02/24/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -154,13 +161,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Guyver's Blogs">
+      <meta itemprop="name" content="AWS DDB冷热分离设计升级版 | Guyver's Blogs">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/24/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/" class="post-title-link" itemprop="url">AWS DDB冷热分离设计升级版</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          AWS DDB冷热分离设计升级版
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -184,7 +191,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>距离<a href="/_posts/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1.md">上一次冷热分离</a>，过去两年，数据量进一步膨胀，但业务趋于稳定，<strong>降本增效</strong>成了此时的重点工作。<br>系统主要是C&#x2F;S架构，为了降本，我们下调了客户端同步数据的频率，以便减少对数据库的读写费用。</p>
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>距离<a href="/_posts/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1.md">上一次冷热分离</a>，过去两年，数据量进一步膨胀，但业务趋于稳定，<strong>降本增效</strong>成了此时的重点工作。<br>系统主要是C&#x2F;S架构，为了降本，我们下调了客户端同步数据的频率，以便减少对数据库的读写费用。</p>
 <h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>重新分析一次费用结构</p>
 <ol>
 <li>由于降频后读写费用下降，AWS DDB存储费用又成了费用大户，业务场景上偏向于写多读少，即使每次业务查询都依赖S3费用也不高。</li>
@@ -253,7 +260,6 @@
 </ul>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本方案在不断碰撞中演化，评估、制定和实施耗时较长。<br>尤其在评估阶段，需要充分考虑不同云厂商的技术通用性、数据可恢复性、系统容错性和灵活性，保证方案的系统复杂度和降费目标达到一个相对平衡的状态。<br>在实施阶段，需要考虑用户无感上线，上线意外时回滚方案。<br>在维护阶段，考虑日常故障的容错性和数据可恢复性。</p>
 
-      
     </div>
 
     
@@ -261,101 +267,22 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/" rel="prev" title="AWS DDB冷热分离设计">
+                  <i class="fa fa-chevron-left"></i> AWS DDB冷热分离设计
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://guyver.icu/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Guyver">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Guyver's Blogs">
-      <meta itemprop="description" content="没有困难的任务，只有勇敢的狗狗">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Guyver's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">AWS DDB冷热分离设计</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-02-20 23:14:18" itemprop="dateCreated datePublished" datetime="2023-02-20T23:14:18+08:00">2023-02-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-24 11:31:39" itemprop="dateModified" datetime="2023-02-24T11:31:39+08:00">2023-02-24</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>公司早期业务快速增长时，出于运维成本、稳定性和性能考虑，选择公有云部署。由于和小米工作合作紧密且小米生态云优惠力度大，早期部署在<a target="_blank" rel="noopener" href="https://cnbj6.cloud.mi.com/">小米生态云</a>上。其中核心健康数据规模大，增长快，业务变化快，字段灵活，但查询条件简单，技术选型使用<a target="_blank" rel="noopener" href="https://cnbj6.cloud.mi.com/#/index/product/sds">NoSQL数据库SDS</a>。<br>但随着业务发展越来越大，小米生态云的稳定性问题暴露出来，为了保障用户体验和提高服务可用性，公司选择了在全球范围内更加成熟稳定的<a target="_blank" rel="noopener" href="https://aws.amazon.com/">亚马逊AWS</a>，对标的NoSQL数据库是<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/dynamodb/">AWS DynamoDB</a>，但<strong>AWS DDB费用较贵，于是在迁移云服务更换数据库时，对底层存储设计进行优化升级</strong>。</p>
-<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>在迁移云时，由于是toC业务，需要保证用户体验，不能停服割接，采用<strong>蚂蚁搬家</strong>的方式，针对每个用户逐一进行迁移，迁移过程中，冻结用户操作，对用户仅有分钟级的影响，甚至仅影响写操作，不影响读。<br>虽然按用户迁移耗时长，费用高，但过程可控，风险低，一边灰度一边观察用户反馈，迁移云过程不是本文重点，不做详细描述。<br>AWS DDB存储费用相比IOPS高很多，存在明显的优化空间。在业务趋势稳定后，以降费为目标，对<strong>云端服务费用进行分析和优化</strong>。<br>对数据的读写进行监控，发现数据读写呈现出明显的冷热分界，且在SDS上表现确实存储费用占比较大，属于典型的冷热数据。AWS DDB针对冷热场景提供了<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/dynamodb/dynamodb-standard-ia/">DDB IA模式</a>，Storage&#x2F;IOPS费用比超过6:4，即可启用IA进行降费，但通过计算，使用<strong>冷热分离方案降费更优</strong>。</p>
-<h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><p>冷热分离有以下几个问题需要解决</p>
-<ul>
-<li>冷存储如何选型</li>
-<li>业务程序如何改造</li>
-<li>增量数据如何转移到冷存储</li>
-<li>存量数据如何转移到冷存储</li>
-</ul>
-<h2 id="冷存储如何选型"><a href="#冷存储如何选型" class="headerlink" title="冷存储如何选型"></a>冷存储如何选型</h2><p>取决于成本、业务程序查询是否方便、增量数据转移是否方便，通过和AWS架构师的深入交流，详细分析了AWS托管的各种存储特性和成本模型，冷存储选型决定使用<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/s3/">AWS S3</a>。</p>
-<h2 id="业务程序如何改造"><a href="#业务程序如何改造" class="headerlink" title="业务程序如何改造"></a>业务程序如何改造</h2><p>健康数据的查询，多是以周、双周、月、年粒度，考虑到S3的费用按查询次数计费，内网调用没有出网流量费用，管理和分析等其他功能多是和文件数正相关，文件粒度不宜太小。但太大的文件，业务程序查询时，需要加载文件到内存中，会给JVM内存要求高且费用会上升，综合考虑，<strong>以年为单位存储用户冷数据</strong>。<br>通过对数据的查询时间范围做分析，<strong>以365天做冷热分界点</strong>，业务程序在查询近期数据时，使用DDB，查询历史数据是，使用S3。</p>
-<h2 id="增量数据如何转移到冷存储"><a href="#增量数据如何转移到冷存储" class="headerlink" title="增量数据如何转移到冷存储"></a>增量数据如何转移到冷存储</h2><p>DDB到S3的数据转移，AWS提供了成熟的方案，利用DDB TTL特性，数据过期后将从数据库中移除，可以通过<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/lambda">AWS Lambda</a>对接Dynamo DDB Stream，拿到被移除的数据，写入S3中。<br>每天近千万的数据过期，被转移到S3中，过期时间虽有波峰波谷，但不至过于集中产生毛刺，使用AWS Lambda支持自动扩缩容，S3吞吐量也支持自动扩容，性能和稳定性有保障。<br>在可用性方面，AWS Lambda支持消费retry和死信队列，也支持配置AWS Cloud Watch监控和告警。</p>
-<p><img src="/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/2023-02-19-16-20-25.png"></p>
-<h2 id="存量数据如何转移到冷存储"><a href="#存量数据如何转移到冷存储" class="headerlink" title="存量数据如何转移到冷存储"></a>存量数据如何转移到冷存储</h2><p>由于迁移云是用户粒度的迁移，在一个用户的数据被完整的导入另一个区时，先写入DDB，然后根据数据的时间字段，设置TTL，如果是冷数据，将会很快被淘汰到S3中，热数据仍然会保留在DDB中，等待自然冷却。<br>AWS DDB不同于一般的云托管数据库，并不是按资源配置收费，而是按用量收费，主要费用是存储、IOPS和其他分析管理费用，其中写（增删改）单价是读单价的20~40倍。如果不是趁着迁移云时给存量数据设计TTL，迁移后如果再想修改TTL，则相当于对全量数据进行一次写操作，<strong>收费极其昂贵</strong>。<br>事后分析迁移云费用时，发现让历史数据先入DDB再走冷却流程，会耗费DDB写和Lambda费用，后续其他数据中心的云迁移中，对此在进行了优化，在迁移程序中，直接将历史数据中的冷数据部分直接写入S3，由于冷数据占比大，仅此一项，直接节约5成数据迁移费用。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>存储费用高昂，业务上数据冷热特征明显，冷热分离是比较容易想到的常规方案。<br>挑战在于如何在较大数据规模下，如何对用户无感地灰度上线，以及兼顾费用成本、维护成本、改造成本、方案在不同云上的兼容性，综合考虑出一个合理的方案。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
 
 

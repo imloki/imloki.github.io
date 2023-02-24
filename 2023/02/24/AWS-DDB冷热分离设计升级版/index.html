@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png">
 <meta property="og:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-15-41.png">
 <meta property="article:published_time" content="2023-02-24T03:08:41.000Z">
-<meta property="article:modified_time" content="2023-02-24T03:50:06.535Z">
+<meta property="article:modified_time" content="2023-02-24T03:58:53.060Z">
 <meta property="article:author" content="Guyver">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png">
@@ -107,7 +107,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80-%E6%89%B9%E9%87%8F%E5%90%88%E5%B9%B6"><span class="nav-number">3.1.</span> <span class="nav-text">方案一 批量合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C-%E6%8F%90%E5%89%8D%E5%90%88%E5%B9%B6"><span class="nav-number">3.2.</span> <span class="nav-text">方案二 提前合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89-%E6%9A%82%E5%AD%98%E5%90%88%E5%B9%B6"><span class="nav-number">3.3.</span> <span class="nav-text">方案三 暂存合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E6%8E%A8%E8%8D%90%EF%BC%89%E6%96%B9%E6%A1%88%E5%9B%9B-%E5%AE%9A%E6%97%B6%E5%90%88%E5%B9%B6"><span class="nav-number">3.4.</span> <span class="nav-text">（推荐）方案四 定时合并</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E6%96%BD"><span class="nav-number">4.</span> <span class="nav-text">实施</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BD%92%E6%A1%A3"><span class="nav-number">4.0.1.</span> <span class="nav-text">存量数据归档</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E7%BA%BF%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.0.2.</span> <span class="nav-text">上线步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">4.0.3.</span> <span class="nav-text">备份恢复</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.1.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80-%E6%89%B9%E9%87%8F%E5%90%88%E5%B9%B6"><span class="nav-number">3.1.</span> <span class="nav-text">方案一 批量合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C-%E6%8F%90%E5%89%8D%E5%90%88%E5%B9%B6"><span class="nav-number">3.2.</span> <span class="nav-text">方案二 提前合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89-%E6%9A%82%E5%AD%98%E5%90%88%E5%B9%B6"><span class="nav-number">3.3.</span> <span class="nav-text">方案三 暂存合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EF%BC%88%E6%8E%A8%E8%8D%90%EF%BC%89%E6%96%B9%E6%A1%88%E5%9B%9B-%E5%AE%9A%E6%97%B6%E5%90%88%E5%B9%B6"><span class="nav-number">3.4.</span> <span class="nav-text">（推荐）方案四 定时合并</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E6%96%BD"><span class="nav-number">4.</span> <span class="nav-text">实施</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BD%92%E6%A1%A3"><span class="nav-number">4.1.</span> <span class="nav-text">存量数据归档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E7%BA%BF%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.2.</span> <span class="nav-text">上线步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E4%BB%BD%E6%81%A2%E5%A4%8D"><span class="nav-number">4.3.</span> <span class="nav-text">备份恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.4.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -178,7 +178,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2023-02-24 11:08:41 / Modified: 11:50:06" itemprop="dateCreated datePublished" datetime="2023-02-24T11:08:41+08:00">2023-02-24</time>
+      <time title="Created: 2023-02-24 11:08:41 / Modified: 11:58:53" itemprop="dateCreated datePublished" datetime="2023-02-24T11:08:41+08:00">2023-02-24</time>
     </span>
 
   
@@ -233,8 +233,8 @@
 <li>归档后启用TTL功能，仍然是shell脚本触发，清理掉过期数据</li>
 <li>48小时后，禁用TTL。由于我们的调度平台不支持延迟后置任务，这里使用一个小技巧，在某个地方记录上一次启用TTL时间，每隔一段时间尝试禁用TTL，如果距离上一次启用TTL时间超过48H，则禁用TTL，否则跳过。<br>实际airflow执行效果图如下<br><img src="/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-15-41.png"></li>
 </ol>
-<h3 id="存量数据归档"><a href="#存量数据归档" class="headerlink" title="存量数据归档"></a>存量数据归档</h3><p>由于热数据时间缩短到10点，存量数据归档后需要将历史355天数据删除，自然冷却需要365天等不及，更新TTL使其立刻过期但太贵，Drop表免费是个好办法，但上线时需要额外的过渡程序兼容新老表并存场景。这里我们采用一个小技巧，TTL字段要求是秒级时间戳字段，当前时间比TTL小即表示数据过期，恰好该表有个createTime是秒级时间戳，是过去时间，先禁用TTL，再重新启用createTime作为TTL字段，即可将历史数据全部归档，为了防止将新数据也归档，改造程序另起一个临时字段realCreateTime存放创建时间，而新数据写入时，createTime设置成当前时间+1年，防止误清理。上线结束后，回退此改动即可，最终数据归档时，将realCreateTime写入createTime字段。</p>
-<h3 id="上线步骤"><a href="#上线步骤" class="headerlink" title="上线步骤"></a>上线步骤</h3><ol>
+<h2 id="存量数据归档"><a href="#存量数据归档" class="headerlink" title="存量数据归档"></a>存量数据归档</h2><p>由于热数据时间缩短到10点，存量数据归档后需要将历史355天数据删除，自然冷却需要365天等不及，更新TTL使其立刻过期但太贵，Drop表免费是个好办法，但上线时需要额外的过渡程序兼容新老表并存场景。这里我们采用一个小技巧，TTL字段要求是秒级时间戳字段，当前时间比TTL小即表示数据过期，恰好该表有个createTime是秒级时间戳，是过去时间，先禁用TTL，再重新启用createTime作为TTL字段，即可将历史数据全部归档，为了防止将新数据也归档，改造程序另起一个临时字段realCreateTime存放创建时间，而新数据写入时，createTime设置成当前时间+1年，防止误清理。上线结束后，回退此改动即可，最终数据归档时，将realCreateTime写入createTime字段。</p>
+<h2 id="上线步骤"><a href="#上线步骤" class="headerlink" title="上线步骤"></a>上线步骤</h2><ol>
 <li>改造业务程序，重写createTime和realCreateTime字段的逻辑，并且模糊化冷热边界，查询采用merge逻辑，而不是之前根据时间判断冷热。</li>
 <li>禁用TTL</li>
 <li>归档存量数据</li>
@@ -243,7 +243,7 @@
 <li>…</li>
 <li>下一轮归档，启用正式TTL字段</li>
 </ol>
-<h3 id="备份恢复"><a href="#备份恢复" class="headerlink" title="备份恢复"></a>备份恢复</h3><p>增量备份数据在S3上，以分片数据的形式保存，文件数少。因是备份增量数据，算是局部备份，存储费用有限。<br>每一轮归档都会涉及到的冷热数据做了备份，平时保留最近3个备份，可修复最近一个月内的故障数据。而第一次归档的备份是存量数据备份，可用于上线回滚。</p>
+<h2 id="备份恢复"><a href="#备份恢复" class="headerlink" title="备份恢复"></a>备份恢复</h2><p>增量备份数据在S3上，以分片数据的形式保存，文件数少。因是备份增量数据，算是局部备份，存储费用有限。<br>每一轮归档都会涉及到的冷热数据做了备份，平时保留最近3个备份，可修复最近一个月内的故障数据。而第一次归档的备份是存量数据备份，可用于上线回滚。</p>
 <h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>实际操作过程中，有很多注意事项。</p>
 <ul>
 <li><strong>拆分独立任务</strong>。扫描DDB全表因其不含业务逻辑，不易因BUG而重试，费用也贵，尽可能一次性成功，后面拆成独立任务也是一个道理。</li>
@@ -258,7 +258,7 @@
 <li><strong>注意初次上线时意外重试</strong>。在刷入S3时，可能存在脏数据或者代码BUG导致整体任务失败，可以分多次刷，比如按1%-&gt;5%-&gt;20%-&gt;74%比例，用户ID取模，分四次刷入S3。</li>
 <li><strong>合理使用按需实例和竞价实例</strong>。AWS提供了多种类型的计算实例，其中包括<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/ec2/pricing/on-demand/">按需实例</a>和<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/ec2/spot/pricing/">竞价实例</a>，按需稳定但昂贵，竞价便宜但不稳定，任务时间短(处理数据少的区)或者允许重试的任务推荐竞价实例，重试成本昂贵的任务推荐按需实例。实践过程中，存量数据处理任务耗时长且重试成本高，一些数据中心竞价实例极不稳定且申请慢，还有Spark Driver节点要求稳定性高，这些需要使用按需实例，其他场景都一律使用竞价实例。</li>
 </ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本方案在不断碰撞中演化，评估、制定和实施耗时较长。<br>尤其在评估阶段，需要充分考虑不同云厂商的技术通用性、数据可恢复性、系统容错性和灵活性，保证方案的系统复杂度和降费目标达到一个相对平衡的状态。<br>在实施阶段，需要考虑用户无感上线，上线意外时回滚方案。<br>在维护阶段，考虑日常故障的容错性和数据可恢复性。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本方案在不断碰撞中演化，评估、制定和实施耗时较长。<br>尤其在评估阶段，需要充分考虑不同云厂商的技术通用性、数据可恢复性、系统容错性和灵活性，保证方案的系统复杂度和降费目标达到一个相对平衡的状态；在实施阶段，需要考虑用户无感上线，上线意外时回滚方案；在维护阶段，考虑日常故障的容错性和数据可恢复性。<br>最终完成的降费效果还是很可观的，系统复杂度相对之前略高，但整体设计更优。</p>
 
     </div>
 

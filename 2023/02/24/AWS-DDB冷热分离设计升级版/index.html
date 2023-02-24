@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png">
 <meta property="og:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-15-41.png">
 <meta property="article:published_time" content="2023-02-24T03:08:41.000Z">
-<meta property="article:modified_time" content="2023-02-24T03:45:37.079Z">
+<meta property="article:modified_time" content="2023-02-24T03:50:06.535Z">
 <meta property="article:author" content="Guyver">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png">
@@ -178,7 +178,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2023-02-24 11:08:41 / Modified: 11:45:37" itemprop="dateCreated datePublished" datetime="2023-02-24T11:08:41+08:00">2023-02-24</time>
+      <time title="Created: 2023-02-24 11:08:41 / Modified: 11:50:06" itemprop="dateCreated datePublished" datetime="2023-02-24T11:08:41+08:00">2023-02-24</time>
     </span>
 
   
@@ -221,7 +221,7 @@
 </ol>
 <p>在方案四的演进过程中，发现每个用户的核心数据大小相对稳定，在20年内数据未压缩时在数十M以内，S3上的数据采用gzip格式压缩，基于Deflate 算法，可流式解压，这意味着如果有序存储数据，即可在不用加载所有数据到内存中，查询到需要的数据，业务程序在查询时的<strong>JVM内存占用更小</strong>。幸运的是，甚至不用自己实现，<strong>AWS S3官方支持类似的select查询</strong>，且实测后费用很少，最后决定将每个用户的历史数据压缩成一个全文件，既减少了归档和业务查询时的S3读写，也大大减少了S3文件数，分析和管理费用也得到了一些优化。</p>
 <blockquote>
-<p>这里还有个<strong>关于TTL的插曲</strong>。早期在调研方案时，官方文档上在于TTL免费说的模棱两可，基于对AWS有钱不赚的刻板印象，在抱着怀疑态度咨询了AWS架构师后，没有得到满意答复，而后又咨询了AWS内部产品经理，得到了回复，TTL扫描标记特性不收费，但最终删除仍然收费。至此，方案中费用最贵的是数据归档后的清理费用，因为删除属于写操作，写:读单价比最高能达到40倍。但是，Drop表不收费，于是有了滚动表方案，查询和表的滚动切换很复杂。所幸后来一位敢于质疑权威的同学发现，英文版AWS文档关于TTL免费描述更清晰，于是我们做了测试，通过验证账单发现TTL功能确实免费，于是有了现在的方案四最终版。<br>AWS DDB的计费模式，强一致性读一条记录每4kb记做1rcu（不超过4kb也记为1rcu），最终一致性读便宜一半（我们在用），而写入和删除一条记录每1kb记为1wcu，而1个wcu的单价是1个rcu的5倍，也就是一条4kb的记录，写是读的40倍。</p>
+<p>这里还有个<strong>关于TTL的插曲</strong>。早期在调研方案时，官方文档上在于TTL免费说的模棱两可，基于对AWS有钱不赚的刻板印象，在抱着怀疑态度咨询了AWS架构师后，没有得到满意答复，而后又咨询了AWS内部产品经理，得到了回复，TTL扫描标记特性不收费，但最终删除仍然收费。至此，方案中费用最贵的是数据归档后的清理费用，因为删除属于写操作，写:读单价比最高能达到40倍。但是，Drop表不收费，于是有了滚动表方案，查询和表的滚动切换很复杂。所幸后来一位<strong>敢于质疑权威</strong>的同学发现，<a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/howitworks-ttl.html">英文版AWS文档</a>中关于TTL免费描述更清晰，于是我们做了测试，通过验证账单发现TTL功能确实免费，于是有了现在的方案四最终版。<br>AWS DDB的计费模式，强一致性读一条记录每4kb记做1rcu（不超过4kb也记为1rcu），最终一致性读便宜一半（我们在用），而写入和删除一条记录每1kb记为1wcu，而1个wcu的单价是1个rcu的5倍，也就是一条4kb的记录，写是读的40倍。</p>
 </blockquote>
 <h1 id="实施"><a href="#实施" class="headerlink" title="实施"></a>实施</h1><p><img src="/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png"><br>由于DDB和S3的读写都需要费用，尽量减少重试，归档中每个步骤需要的计算资源特点不尽相同，我们将归档任务切分上多个步骤，如上图所示。</p>
 <ol>

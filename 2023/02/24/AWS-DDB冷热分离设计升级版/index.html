@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png">
 <meta property="og:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-15-41.png">
 <meta property="article:published_time" content="2023-02-24T03:08:41.000Z">
-<meta property="article:modified_time" content="2023-02-24T03:36:46.559Z">
+<meta property="article:modified_time" content="2023-02-24T03:43:23.964Z">
 <meta property="article:author" content="Guyver">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://guyver.icu/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png">
@@ -178,7 +178,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2023-02-24 11:08:41 / Modified: 11:36:46" itemprop="dateCreated datePublished" datetime="2023-02-24T11:08:41+08:00">2023-02-24</time>
+      <time title="Created: 2023-02-24 11:08:41 / Modified: 11:43:23" itemprop="dateCreated datePublished" datetime="2023-02-24T11:08:41+08:00">2023-02-24</time>
     </span>
 
   
@@ -191,7 +191,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>距离<a href="/_posts/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1.md">上一次冷热分离</a>，过去两年，数据量进一步膨胀，但业务趋于稳定，<strong>降本增效</strong>成了此时的重点工作。<br>系统主要是C&#x2F;S架构，为了降本，我们下调了客户端同步数据的频率，以便减少对数据库的读写费用。</p>
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>距离<a href="./AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1.md">上一次冷热分离</a>，过去两年，数据量进一步膨胀，但业务趋于稳定，<strong>降本增效</strong>成了此时的重点工作。<br>系统主要是C&#x2F;S架构，为了降本，我们下调了客户端同步数据的频率，以便减少对数据库的读写费用。</p>
 <h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>重新分析一次费用结构</p>
 <ol>
 <li>由于降频后读写费用下降，AWS DDB存储费用又成了费用大户，业务场景上偏向于写多读少，即使每次业务查询都依赖S3费用也不高。</li>
@@ -206,7 +206,7 @@
 </ol>
 <p>在分析中，还发现了一个隐藏很深的BUG，这里由于数据不会立刻进去Lambda，<strong>刚过期的数据，不一定能被查询到</strong>。由于冷热边界是1年前，用户查询场景少，即使恰好被查询到无数据，用户也很难察觉，这个BUG一直没有被发现。但由于热数据时间缩短，该问题在新方案中必须得到解决。</p>
 <blockquote>
-<p>TTL过期机制是AWS DDB提供，底层原理是，DDB内数据存储在多个分区，类似Mysql的分区表，后台有两类线程定时扫描数据，线程一扫描和标记已过期数据，线程二将标记好的数据删除并写入DDB Stream。数据到期后不会立刻被扫描到，但AWS保证数据在48H内一定被删除掉，在标记后，仍然可以从DDB查询到，但是数据会被打上逻辑删除标识。<br>更多TTL介绍详见 <a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html">https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html</a></p>
+<p>TTL过期机制是AWS DDB提供，底层原理是，DDB内数据存储在多个分区，类似Mysql的分区表，后台有两类线程定时扫描数据，线程一扫描和标记已过期数据，线程二将标记好的数据删除并写入DDB Stream。数据到期后不会立刻被扫描到，但AWS保证数据在48H内一定被删除掉，在标记后，仍然可以从DDB查询到，但是数据会被打上逻辑删除标识。<br>更多TTL介绍详见<a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html">官网网址</a></p>
 </blockquote>
 <h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><p>备选方案较多，下面介绍四种方案思路，其他变种方案不赘述</p>
 <h2 id="方案一-批量合并"><a href="#方案一-批量合并" class="headerlink" title="方案一 批量合并"></a>方案一 批量合并</h2><p>DDB Stream的每条消息中，包含多条过期数据，由于分区内线程扫描的特性，如果我们将用户连续多天数据的TTL设置在同一时间过期，很大可能在同一条消息中的多条过期数据会是同一个用户的，能合并写入S3，一定程度上减少S3读写频次。<br>DDB存储降费通过缩短热数据时间，S3查询404通过年文件索引或用户全文件解决。<br>该方案的批量合并优化较弱，但胜在改动最简单。</p>
@@ -243,7 +243,7 @@
 <li>…</li>
 <li>下一轮归档，启用正式TTL字段</li>
 </ol>
-<h3 id="备份恢复"><a href="#备份恢复" class="headerlink" title="备份恢复"></a>备份恢复</h3><p>增量备份数据在S3上，以分片数据的形式保存，文件数少，又因为是备份增量数据，算是局部备份，存储费用有限。<br>每一轮归档都会涉及到的冷热数据做了备份，平时保留最近3个备份，可修复最近一个月内的故障数据。而第一次归档的备份是存量数据备份，可用于上线回滚。</p>
+<h3 id="备份恢复"><a href="#备份恢复" class="headerlink" title="备份恢复"></a>备份恢复</h3><p>增量备份数据在S3上，以分片数据的形式保存，文件数少。因是备份增量数据，算是局部备份，存储费用有限。<br>每一轮归档都会涉及到的冷热数据做了备份，平时保留最近3个备份，可修复最近一个月内的故障数据。而第一次归档的备份是存量数据备份，可用于上线回滚。</p>
 <h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>实际操作过程中，有很多注意事项。</p>
 <ul>
 <li><strong>拆分独立任务</strong>。扫描DDB全表因其不含业务逻辑，不易因BUG而重试，费用也贵，尽可能一次性成功，后面拆成独立任务也是一个道理。</li>

@@ -19,25 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"guyver.icu","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="没有困难的任务，只有勇敢的狗狗">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Guyver&#39;s Blogs">
-<meta property="og:url" content="https://guyver.icu/index.html">
+    <meta name="description" content="整理翻译自 https:&#x2F;&#x2F;json-schema.org&#x2F;understanding-json-schema&#x2F;index.html  JSON Schema是用于验证JSON数据结构的强大工具。但是，通过阅读其文档来学习使用它，就像通过查看蓝图来学习驾驶汽车。如果您要做的就是开车，则无需知道汽车如何装配在一起。因此，本书旨在成为JSON Schema的友好的驾校教练。它适用于那些想要编写和理解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解JSON Schema">
+<meta property="og:url" content="https://guyver.icu/2023/02/28/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JSON-Schema/index.html">
 <meta property="og:site_name" content="Guyver&#39;s Blogs">
-<meta property="og:description" content="没有困难的任务，只有勇敢的狗狗">
+<meta property="og:description" content="整理翻译自 https:&#x2F;&#x2F;json-schema.org&#x2F;understanding-json-schema&#x2F;index.html  JSON Schema是用于验证JSON数据结构的强大工具。但是，通过阅读其文档来学习使用它，就像通过查看蓝图来学习驾驶汽车。如果您要做的就是开车，则无需知道汽车如何装配在一起。因此，本书旨在成为JSON Schema的友好的驾校教练。它适用于那些想要编写和理解">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-02-28T12:39:39.000Z">
+<meta property="article:modified_time" content="2023-03-01T13:58:23.376Z">
 <meta property="article:author" content="Guyver">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://guyver.icu/">
+<link rel="canonical" href="https://guyver.icu/2023/02/28/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JSON-Schema/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"en","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guyver.icu/2023/02/28/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JSON-Schema/","path":"2023/02/28/深入理解JSON-Schema/","title":"深入理解JSON Schema"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Guyver's Blogs</title>
+<title>深入理解JSON Schema | Guyver's Blogs</title>
   
 
 
@@ -67,7 +69,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">Guyver's Blogs</h1>
+      <p class="site-title">Guyver's Blogs</p>
       <i class="logo-line"></i>
     </a>
   </div>
@@ -89,7 +91,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -102,6 +104,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%AC%E4%B9%A6%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84%E7%BA%A6%E5%AE%9A"><span class="nav-number">1.</span> <span class="nav-text">本书中使用的约定</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%AE%9A%E4%BA%8E%E8%8D%89%E7%A8%BF%E7%9A%84%E6%B3%A8%E9%87%8A"><span class="nav-number">1.1.</span> <span class="nav-text">特定于草稿的注释</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">1.2.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFSchema%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">什么是Schema？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-number">3.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hello%EF%BC%8CWorld%EF%BC%81"><span class="nav-number">3.1.</span> <span class="nav-text">Hello，World！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#type%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">3.2.</span> <span class="nav-text">type关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E4%B8%80%E4%B8%AAJSON-Schema"><span class="nav-number">3.3.</span> <span class="nav-text">声明一个JSON Schema</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E4%B8%80%E4%B8%AA%E5%94%AF%E4%B8%80%E7%9A%84%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-number">3.4.</span> <span class="nav-text">声明一个唯一的标识符</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSON-Schema%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">JSON Schema参考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%AE%9A%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">4.1.</span> <span class="nav-text">特定类型的关键字</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">4.2.</span> <span class="nav-text">字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%BF%E5%BA%A6"><span class="nav-number">4.2.1.</span> <span class="nav-text">长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">4.2.2.</span> <span class="nav-text">正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.2.3.</span> <span class="nav-text">格式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">4.2.3.1.</span> <span class="nav-text">内置格式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%97%A5%E6%9C%9F%E5%92%8C%E6%97%B6%E9%97%B4"><span class="nav-number">4.2.3.1.1.</span> <span class="nav-text">日期和时间</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E5%9C%B0%E5%9D%80"><span class="nav-number">4.2.3.1.2.</span> <span class="nav-text">电子邮件地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BB%E6%9C%BA%E5%90%8D"><span class="nav-number">4.2.3.1.3.</span> <span class="nav-text">主机名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#IP%E5%9C%B0%E5%9D%80"><span class="nav-number">4.2.3.1.4.</span> <span class="nav-text">IP地址</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-number">4.2.3.1.5.</span> <span class="nav-text">资源标识符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#URI%E6%A8%A1%E6%9D%BF"><span class="nav-number">4.2.3.1.6.</span> <span class="nav-text">URI模板</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#JSON%E6%8C%87%E9%92%88"><span class="nav-number">4.2.3.1.7.</span> <span class="nav-text">JSON指针</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F-1"><span class="nav-number">4.2.3.1.8.</span> <span class="nav-text">正则表达式</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F-2"><span class="nav-number">4.3.</span> <span class="nav-text">正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90-1"><span class="nav-number">4.3.1.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%80%BC"><span class="nav-number">4.4.</span> <span class="nav-text">数值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E6%95%B0"><span class="nav-number">4.4.1.</span> <span class="nav-text">整数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%AD%97"><span class="nav-number">4.4.2.</span> <span class="nav-text">数字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%8D%E6%95%B0"><span class="nav-number">4.4.3.</span> <span class="nav-text">倍数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8C%83%E5%9B%B4"><span class="nav-number">4.4.4.</span> <span class="nav-text">范围</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1"><span class="nav-number">4.5.</span> <span class="nav-text">对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7"><span class="nav-number">4.5.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%9D%E5%A4%96%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">4.5.2.</span> <span class="nav-text">额外的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%85%E9%9C%80%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="nav-number">4.5.3.</span> <span class="nav-text">必需的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E5%90%8D%E7%A7%B0"><span class="nav-number">4.5.4.</span> <span class="nav-text">属性名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Size"><span class="nav-number">4.5.5.</span> <span class="nav-text">Size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96"><span class="nav-number">4.5.6.</span> <span class="nav-text">依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#property%E4%BE%9D%E8%B5%96"><span class="nav-number">4.5.6.1.</span> <span class="nav-text">property依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#schema%E4%BE%9D%E8%B5%96"><span class="nav-number">4.5.6.2.</span> <span class="nav-text">schema依赖</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pattern%E5%B1%9E%E6%80%A7"><span class="nav-number">4.5.7.</span> <span class="nav-text">Pattern属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84"><span class="nav-number">4.6.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Items"><span class="nav-number">4.6.1.</span> <span class="nav-text">Items</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%97%E8%A1%A8%E9%AA%8C%E8%AF%81"><span class="nav-number">4.6.1.1.</span> <span class="nav-text">列表验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%83%E7%BB%84%E9%AA%8C%E8%AF%81"><span class="nav-number">4.6.1.2.</span> <span class="nav-text">元组验证</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Length"><span class="nav-number">4.6.2.</span> <span class="nav-text">Length</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%94%AF%E4%B8%80"><span class="nav-number">4.6.3.</span> <span class="nav-text">唯一</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%83%E5%B0%94"><span class="nav-number">4.7.</span> <span class="nav-text">布尔</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A9%BA"><span class="nav-number">4.8.</span> <span class="nav-text">空</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">4.9.</span> <span class="nav-text">通用关键字</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E8%A7%A3Annotations"><span class="nav-number">4.9.1.</span> <span class="nav-text">注解Annotations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E9%87%8AComments"><span class="nav-number">4.9.2.</span> <span class="nav-text">注释Comments</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%9A%E4%B8%BE%E5%80%BC"><span class="nav-number">4.9.3.</span> <span class="nav-text">枚举值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E9%87%8F"><span class="nav-number">4.9.4.</span> <span class="nav-text">常量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Media%EF%BC%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%96%E7%A0%81%E7%9A%84%E9%9D%9EJSON%E6%95%B0%E6%8D%AE"><span class="nav-number">4.10.</span> <span class="nav-text">Media：字符串编码的非JSON数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#contentMediaType"><span class="nav-number">4.10.1.</span> <span class="nav-text">contentMediaType</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#contentEncoding"><span class="nav-number">4.10.2.</span> <span class="nav-text">contentEncoding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90-2"><span class="nav-number">4.10.3.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E5%90%88Schema"><span class="nav-number">4.11.</span> <span class="nav-text">组合Schema</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#allOf"><span class="nav-number">4.11.1.</span> <span class="nav-text">allOf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#anyOf"><span class="nav-number">4.11.2.</span> <span class="nav-text">anyOf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#oneOf"><span class="nav-number">4.11.3.</span> <span class="nav-text">oneOf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#not"><span class="nav-number">4.11.4.</span> <span class="nav-text">not</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90%E6%A8%A1%E5%BC%8F%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="nav-number">4.12.</span> <span class="nav-text">子模式条件判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#schema%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">4.13.</span> <span class="nav-text">$ schema关键字</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E5%A4%8D%E6%9D%82%E7%9A%84Schema"><span class="nav-number">5.</span> <span class="nav-text">构建复杂的Schema</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E7%94%A8"><span class="nav-number">5.1.</span> <span class="nav-text">重用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92"><span class="nav-number">5.1.1.</span> <span class="nav-text">递归</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8-id%E5%B1%9E%E6%80%A7"><span class="nav-number">5.2.</span> <span class="nav-text">在$ id属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86-id%E4%B8%8E-ref%E4%B8%80%E8%B5%B7%E4%BD%BF%E7%94%A8"><span class="nav-number">5.2.1.</span> <span class="nav-text">将$id与$ref一起使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-number">5.3.</span> <span class="nav-text">扩展</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -131,16 +134,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
     <link itemprop="mainEntityOfPage" href="https://guyver.icu/2023/02/28/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JSON-Schema/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -154,13 +158,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Guyver's Blogs">
+      <meta itemprop="name" content="深入理解JSON Schema | Guyver's Blogs">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/28/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JSON-Schema/" class="post-title-link" itemprop="url">深入理解JSON Schema</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          深入理解JSON Schema
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -190,7 +194,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <blockquote>
+        <blockquote>
 <p>整理翻译自 <a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/index.html">https://json-schema.org/understanding-json-schema/index.html</a></p>
 </blockquote>
 <p>JSON Schema是用于验证JSON数据结构的强大工具。但是，通过阅读其文档来学习使用它，就像通过查看蓝图来学习驾驶汽车。如果您要做的就是开车，则无需知道汽车如何装配在一起。因此，本书旨在成为JSON Schema的友好的驾校教练。它适用于那些想要编写和理解它的人，但是对那些想装配自己的汽车（例如，编写自己的JSON Schema验证器）的人并不适用。</p>
@@ -957,7 +961,6 @@
 
 <p>从这些基本的片段中，无需大量重复就可以构建非常强大的模式。</p>
 
-      
     </div>
 
     
@@ -965,238 +968,22 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/24/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/" rel="prev" title="AWS DDB冷热分离设计升级版">
+                  <i class="fa fa-chevron-left"></i> AWS DDB冷热分离设计升级版
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://guyver.icu/2023/02/24/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Guyver">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Guyver's Blogs">
-      <meta itemprop="description" content="没有困难的任务，只有勇敢的狗狗">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Guyver's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/24/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/" class="post-title-link" itemprop="url">AWS DDB冷热分离设计升级版</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-      
-
-      <time title="Created: 2023-02-24 11:08:41 / Modified: 12:02:18" itemprop="dateCreated datePublished" datetime="2023-02-24T11:08:41+08:00">2023-02-24</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>距离<a href="/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/">上一次冷热分离</a>，过去两年，数据量进一步膨胀，但业务趋于稳定，<strong>降本增效</strong>成了此时的重点工作。</p>
-<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>重新分析一次费用结构</p>
-<ol>
-<li>系统主要是C&#x2F;S架构，为了降本，我们下调了客户端同步数据的频率，以便减少对数据库的读写费用，AWS DDB存储费用又成了费用大户，业务场景上偏向于写多读少，即使每次业务查询都依赖S3费用也不高。</li>
-<li>TTL过期机制，导致每个用户每天都会有一条数据过期，会重新读写一次S3</li>
-<li>客户端时长范围性查询历史数据，命中S3，但由于很多用户只有一两年数据，导致会查询很多不存在的年文件，造成了S3查询浪费</li>
-</ol>
-<p>解决思路也比较直接</p>
-<ol>
-<li>AWS DDB存储费用贵，比较容易解决，<strong>缩短热数据时间</strong>，根据线上统计评估出最新读写频次，结合费用公式，计算出最优解在10天左右。</li>
-<li>TTL一条条过期带来的S3读写频发， 可以通过<strong>批量合并写入</strong>的方式优化。</li>
-<li>S3查询浪费，通过建立<strong>年文件索引</strong>或者将年文件改成<strong>用户全文件</strong>，避免S3 404</li>
-</ol>
-<p>在分析中，还发现了一个隐藏很深的BUG，这里由于数据不会立刻进去Lambda，<strong>刚过期的数据，不一定能被查询到</strong>。由于冷热边界是1年前，用户查询场景少，即使恰好被查询到无数据，用户也很难察觉，这个BUG一直没有被发现。但由于热数据时间缩短，该问题在新方案中必须得到解决。</p>
-<blockquote>
-<p>TTL过期机制是AWS DDB提供，底层原理是，DDB内数据存储在多个分区，类似Mysql的分区表，后台有两类线程定时扫描数据，线程一扫描和标记已过期数据，线程二将标记好的数据删除并写入DDB Stream。数据到期后不会立刻被扫描到，但AWS保证数据在48H内一定被删除掉，在标记后，仍然可以从DDB查询到，但是数据会被打上逻辑删除标识。<br>更多TTL介绍详见<a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html">官网网址</a></p>
-</blockquote>
-<h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><p>备选方案较多，下面介绍四种方案思路，其他变种方案不赘述</p>
-<h2 id="方案一-批量合并"><a href="#方案一-批量合并" class="headerlink" title="方案一 批量合并"></a>方案一 批量合并</h2><p>DDB Stream的每条消息中，包含多条过期数据，由于分区内线程扫描的特性，如果我们将用户连续多天数据的TTL设置在同一时间过期，很大可能在同一条消息中的多条过期数据会是同一个用户的，能合并写入S3，一定程度上减少S3读写频次。<br>DDB存储降费通过缩短热数据时间，S3查询404通过年文件索引或用户全文件解决。<br>该方案的批量合并优化较弱，但胜在改动最简单。</p>
-<h2 id="方案二-提前合并"><a href="#方案二-提前合并" class="headerlink" title="方案二 提前合并"></a>方案二 提前合并</h2><p>Lambda消费者程序，每次拿到一条过期数据，反查该用户的多天DDB数据，提前合并写入S3，并在公共暂存（例如redis）存储已写入的数据。后续这些已写入的数据过期后，Lambda程序消费时，会在暂存中发现已写入S3，则认为已消费。数据过期时间改成批量过期更好，不改也没关系。<br>DDB存储降费通过缩短热数据时间，S3查询404通过年文件索引或用户全文件解决。<br>该方案引入暂存，并反查一次DDB，优点不突出。</p>
-<h2 id="方案三-暂存合并"><a href="#方案三-暂存合并" class="headerlink" title="方案三 暂存合并"></a>方案三 暂存合并</h2><p>数据过期后，暂存到公共暂存中，定时将暂存中的数据刷入S3。健康数据的底层查询依赖DDB、暂存和S3三个部分。<br>DDB存储降费通过缩短热数据时间，S3查询404通过年文件索引或用户全文件解决。<br>该方案引入暂存和定时任务，查询逻辑略复杂，优点不突出。</p>
-<h2 id="（推荐）方案四-定时合并"><a href="#（推荐）方案四-定时合并" class="headerlink" title="（推荐）方案四 定时合并"></a>（推荐）方案四 定时合并</h2><p><strong>推荐</strong>，该方案演化了很长时间，这里重点介绍下最终版本。<br>每隔N天，全表扫描一次DDB，将所有数据一次性刷入S3。定时任务触发，每次任务结束后启用TTL功能，间隔48H禁用TTL。业务程序查询基于DDB和S3，写入则类似ES写入流程，增删改都当成数据变更，先入DDB，最后合并到ES。<br>定时任务选型较多，这里考虑到性能和技术复用，采用大数据领域的spark任务和airflow调动平台。<br>由于是统一归档，还可以很方便的制作增量备份大文件。<br>具备以下几个有点：</p>
-<ol>
-<li>依赖定时任务，在不同云厂商的其他数据库选型上更具备<strong>通用性</strong>，数据过期仍然依赖TTL但仅仅是负责清理已归档数据，在其他云数据库上容易找到替代技术。本方案移除了AWS Lambda，也节约了相当一部分费用。</li>
-<li>定期全表扫描和刷入S3，由于热数据变少，全表扫描费用很少，但相比上面的方案零星读取写入，可以做历史数据做备份，在归档程序出错时，可以快速恢复，具备<strong>数据可恢复性</strong>。</li>
-<li>不要求准确的冷热分界，可以很方便地根据业务需要调整热数据时间，<strong>灵活适配业务</strong>。</li>
-<li>数据过期由于TTL手动开闭而变得可控，并且在定时调度或者归档程序出问题时，不会造成数据丢失，更具备<strong>容错性</strong>。</li>
-</ol>
-<p>在方案四的演进过程中，发现每个用户的核心数据大小相对稳定，在20年内数据未压缩时在数十M以内，S3上的数据采用gzip格式压缩，基于Deflate 算法，可流式解压，这意味着如果有序存储数据，即可在不用加载所有数据到内存中，查询到需要的数据，业务程序在查询时的<strong>JVM内存占用更小</strong>。幸运的是，甚至不用自己实现，<strong>AWS S3官方支持类似的select查询</strong>，且实测后费用很少，最后决定将每个用户的历史数据压缩成一个全文件，既减少了归档和业务查询时的S3读写，也大大减少了S3文件数，分析和管理费用也得到了一些优化。</p>
-<blockquote>
-<p>这里还有个<strong>关于TTL的插曲</strong>。早期在调研方案时，官方文档上在于TTL免费说的模棱两可，基于对AWS有钱不赚的刻板印象，在抱着怀疑态度咨询了AWS架构师后，没有得到满意答复，而后又咨询了AWS内部产品经理，得到了回复，TTL扫描标记特性不收费，但最终删除仍然收费。至此，方案中费用最贵的是数据归档后的清理费用，因为删除属于写操作，写:读单价比最高能达到40倍。但是，Drop表不收费，于是有了滚动表方案，查询和表的滚动切换很复杂。所幸后来一位<strong>敢于质疑权威</strong>的同学发现，<a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/howitworks-ttl.html">英文版AWS文档</a>中关于TTL免费描述更清晰，于是我们做了测试，通过验证账单发现TTL功能确实免费，于是有了现在的方案四最终版。<br>AWS DDB的计费模式，强一致性读一条记录每4kb记做1rcu（不超过4kb也记为1rcu），最终一致性读便宜一半（我们在用），而写入和删除一条记录每1kb记为1wcu，而1个wcu的单价是1个rcu的5倍，也就是一条4kb的记录，写是读的40倍。</p>
-</blockquote>
-<h1 id="实施"><a href="#实施" class="headerlink" title="实施"></a>实施</h1><p><img src="/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-14-41.png"><br>由于DDB和S3的读写都需要费用，尽量减少重试，归档中每个步骤需要的计算资源特点不尽相同，我们将归档任务切分上多个步骤，如上图所示。</p>
-<ol>
-<li>禁用TTL，shell脚本通过AWS CLI执行即可。此步为兜底动作，防止启用TTL的48H后未完成TTL禁用。</li>
-<li>spark多并发，扫描DDB全表，将数据分片保存到S3</li>
-<li>从S3拿到step2的DDB数据，按用户分组制作热数据备份，方便step5归档</li>
-<li>从S3拿到step3的热数据备份，获取到所有用户ID，查询S3文件，保存到S3，制作冷数据备份，方便step5归档</li>
-<li>从S3拿到热数据备份和冷数据备份，根据用户ID进行合并，并写入S3</li>
-<li>归档后启用TTL功能，仍然是shell脚本触发，清理掉过期数据</li>
-<li>48小时后，禁用TTL。由于我们的调度平台不支持延迟后置任务，这里使用一个小技巧，在某个地方记录上一次启用TTL时间，每隔一段时间尝试禁用TTL，如果距离上一次启用TTL时间超过48H，则禁用TTL，否则跳过。<br>实际airflow执行效果图如下<br><img src="/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1%E5%8D%87%E7%BA%A7%E7%89%88/2023-02-24-00-15-41.png"></li>
-</ol>
-<h2 id="存量数据归档"><a href="#存量数据归档" class="headerlink" title="存量数据归档"></a>存量数据归档</h2><p>由于热数据时间缩短到10点，存量数据归档后需要将历史355天数据删除，自然冷却需要365天等不及，更新TTL使其立刻过期但太贵，Drop表免费是个好办法，但上线时需要额外的过渡程序兼容新老表并存场景。这里我们采用一个小技巧，TTL字段要求是秒级时间戳字段，当前时间比TTL小即表示数据过期，恰好该表有个createTime是秒级时间戳，是过去时间，先禁用TTL，再重新启用createTime作为TTL字段，即可将历史数据全部归档，为了防止将新数据也归档，改造程序另起一个临时字段realCreateTime存放创建时间，而新数据写入时，createTime设置成当前时间+1年，防止误清理。上线结束后，回退此改动即可，最终数据归档时，将realCreateTime写入createTime字段。</p>
-<h2 id="上线步骤"><a href="#上线步骤" class="headerlink" title="上线步骤"></a>上线步骤</h2><ol>
-<li>改造业务程序，重写createTime和realCreateTime字段的逻辑，并且模糊化冷热边界，查询采用merge逻辑，而不是之前根据时间判断冷热。</li>
-<li>禁用TTL</li>
-<li>归档存量数据</li>
-<li>启用createTime作为新的TTL字段，清理DDB的已归档数据</li>
-<li>48H后禁用TTL</li>
-<li>…</li>
-<li>下一轮归档，启用正式TTL字段</li>
-</ol>
-<h2 id="备份恢复"><a href="#备份恢复" class="headerlink" title="备份恢复"></a>备份恢复</h2><p>增量备份数据在S3上，以分片数据的形式保存，文件数少。因是备份增量数据，算是局部备份，存储费用有限。<br>每一轮归档都会涉及到的冷热数据做了备份，平时保留最近3个备份，可修复最近一个月内的故障数据。而第一次归档的备份是存量数据备份，可用于上线回滚。</p>
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>实际操作过程中，有很多注意事项。</p>
-<ul>
-<li><strong>拆分独立任务</strong>。扫描DDB全表因其不含业务逻辑，不易因BUG而重试，费用也贵，尽可能一次性成功，后面拆成独立任务也是一个道理。</li>
-<li><strong>扫描前上调quota</strong>。防止造成表quota超限对实时业务造成影响</li>
-<li><strong>合理配置分片数和并发度</strong>。在扫描DDB过程中，防止造成quota使用率低或者计算资源利用率低的浪费现象；</li>
-<li><strong>建议quota不宜设置过高</strong>。费用是根据quota来计算的，并非实际吞吐，机器到位并发才能打满，吞吐才能达到预期，但并发高需要很多机器，平台申请时间比较长；另外quota auto scaling需要时间，任务结束后quota不会立刻下调，也无法手动下调，quota过大则浪费比较多。</li>
-<li><strong>注意shuffle操作吃内存</strong>。制作热数据备份时，由于存在shuffle操作，且活跃和非活跃用户的数据存在一定倾斜，单个excutor并发设置1，内存要求更高。</li>
-<li><strong>注意S3吞吐性能瓶颈</strong>。制作冷数据备份时，不存在shuffle，理论上可以通过调整并发线性提升效率，但由于S3吞吐性能无法上调，有初始吞吐上限。如果spark任务在yarn集群上因为分片任务失败，retry也需要费用。解决方法有二，其一，找AWS技术支持从后台手动调整S3分区数来上调吞吐性能，其二，S3在吞吐量过大的情况下会自动上调性能。这里我们穷，没有付费找技术支持，而是通过手写重试策略减少失败可能，并且通过取模分片，分多次慢慢试探S3吞吐瓶颈以便触发自动扩容机制。<blockquote>
-<p>实践发现，S3读或写的吞吐持续10分钟打满(偶尔出现503限流)，即可触发自动扩容机制。</p>
-</blockquote>
-</li>
-<li><strong>注意初次上线时意外重试</strong>。在刷入S3时，可能存在脏数据或者代码BUG导致整体任务失败，可以分多次刷，比如按1%-&gt;5%-&gt;20%-&gt;74%比例，用户ID取模，分四次刷入S3。</li>
-<li><strong>合理使用按需实例和竞价实例</strong>。AWS提供了多种类型的计算实例，其中包括<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/ec2/pricing/on-demand/">按需实例</a>和<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/ec2/spot/pricing/">竞价实例</a>，按需稳定但昂贵，竞价便宜但不稳定，任务时间短(处理数据少的区)或者允许重试的任务推荐竞价实例，重试成本昂贵的任务推荐按需实例。实践过程中，存量数据处理任务耗时长且重试成本高，一些数据中心竞价实例极不稳定且申请慢，还有Spark Driver节点要求稳定性高，这些需要使用按需实例，其他场景都一律使用竞价实例。</li>
-</ul>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本方案在不断碰撞中演化，评估、制定和实施耗时较长。<br>尤其在评估阶段，需要充分考虑不同云厂商的技术通用性、数据可恢复性、系统容错性和灵活性，保证方案的系统复杂度和降费目标达到一个相对平衡的状态；在实施阶段，需要考虑用户无感上线，上线意外时回滚方案；在维护阶段，考虑日常故障的容错性和数据可恢复性。<br>最终完成的降费效果还是很可观的，系统复杂度相对之前略高，但整体设计更优。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://guyver.icu/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Guyver">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Guyver's Blogs">
-      <meta itemprop="description" content="没有困难的任务，只有勇敢的狗狗">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Guyver's Blogs">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2023/02/20/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">AWS DDB冷热分离设计</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2023-02-20 23:14:18" itemprop="dateCreated datePublished" datetime="2023-02-20T23:14:18+08:00">2023-02-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-24 11:31:39" itemprop="dateModified" datetime="2023-02-24T11:31:39+08:00">2023-02-24</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>公司早期业务快速增长时，出于运维成本、稳定性和性能考虑，选择公有云部署。由于和小米工作合作紧密且小米生态云优惠力度大，早期部署在<a target="_blank" rel="noopener" href="https://cnbj6.cloud.mi.com/">小米生态云</a>上。其中核心健康数据规模大，增长快，业务变化快，字段灵活，但查询条件简单，技术选型使用<a target="_blank" rel="noopener" href="https://cnbj6.cloud.mi.com/#/index/product/sds">NoSQL数据库SDS</a>。<br>但随着业务发展越来越大，小米生态云的稳定性问题暴露出来，为了保障用户体验和提高服务可用性，公司选择了在全球范围内更加成熟稳定的<a target="_blank" rel="noopener" href="https://aws.amazon.com/">亚马逊AWS</a>，对标的NoSQL数据库是<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/dynamodb/">AWS DynamoDB</a>，但<strong>AWS DDB费用较贵，于是在迁移云服务更换数据库时，对底层存储设计进行优化升级</strong>。</p>
-<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><p>在迁移云时，由于是toC业务，需要保证用户体验，不能停服割接，采用<strong>蚂蚁搬家</strong>的方式，针对每个用户逐一进行迁移，迁移过程中，冻结用户操作，对用户仅有分钟级的影响，甚至仅影响写操作，不影响读。<br>虽然按用户迁移耗时长，费用高，但过程可控，风险低，一边灰度一边观察用户反馈，迁移云过程不是本文重点，不做详细描述。<br>AWS DDB存储费用相比IOPS高很多，存在明显的优化空间。在业务趋势稳定后，以降费为目标，对<strong>云端服务费用进行分析和优化</strong>。<br>对数据的读写进行监控，发现数据读写呈现出明显的冷热分界，且在SDS上表现确实存储费用占比较大，属于典型的冷热数据。AWS DDB针对冷热场景提供了<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/dynamodb/dynamodb-standard-ia/">DDB IA模式</a>，Storage&#x2F;IOPS费用比超过6:4，即可启用IA进行降费，但通过计算，使用<strong>冷热分离方案降费更优</strong>。</p>
-<h1 id="方案"><a href="#方案" class="headerlink" title="方案"></a>方案</h1><p>冷热分离有以下几个问题需要解决</p>
-<ul>
-<li>冷存储如何选型</li>
-<li>业务程序如何改造</li>
-<li>增量数据如何转移到冷存储</li>
-<li>存量数据如何转移到冷存储</li>
-</ul>
-<h2 id="冷存储如何选型"><a href="#冷存储如何选型" class="headerlink" title="冷存储如何选型"></a>冷存储如何选型</h2><p>取决于成本、业务程序查询是否方便、增量数据转移是否方便，通过和AWS架构师的深入交流，详细分析了AWS托管的各种存储特性和成本模型，冷存储选型决定使用<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/s3/">AWS S3</a>。</p>
-<h2 id="业务程序如何改造"><a href="#业务程序如何改造" class="headerlink" title="业务程序如何改造"></a>业务程序如何改造</h2><p>健康数据的查询，多是以周、双周、月、年粒度，考虑到S3的费用按查询次数计费，内网调用没有出网流量费用，管理和分析等其他功能多是和文件数正相关，文件粒度不宜太小。但太大的文件，业务程序查询时，需要加载文件到内存中，会给JVM内存要求高且费用会上升，综合考虑，<strong>以年为单位存储用户冷数据</strong>。<br>通过对数据的查询时间范围做分析，<strong>以365天做冷热分界点</strong>，业务程序在查询近期数据时，使用DDB，查询历史数据是，使用S3。</p>
-<h2 id="增量数据如何转移到冷存储"><a href="#增量数据如何转移到冷存储" class="headerlink" title="增量数据如何转移到冷存储"></a>增量数据如何转移到冷存储</h2><p>DDB到S3的数据转移，AWS提供了成熟的方案，利用DDB TTL特性，数据过期后将从数据库中移除，可以通过<a target="_blank" rel="noopener" href="https://www.amazonaws.cn/lambda">AWS Lambda</a>对接Dynamo DDB Stream，拿到被移除的数据，写入S3中。<br>每天近千万的数据过期，被转移到S3中，过期时间虽有波峰波谷，但不至过于集中产生毛刺，使用AWS Lambda支持自动扩缩容，S3吞吐量也支持自动扩容，性能和稳定性有保障。<br>在可用性方面，AWS Lambda支持消费retry和死信队列，也支持配置AWS Cloud Watch监控和告警。</p>
-<p><img src="/images/AWS-DDB%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB%E8%AE%BE%E8%AE%A1/2023-02-19-16-20-25.png"></p>
-<h2 id="存量数据如何转移到冷存储"><a href="#存量数据如何转移到冷存储" class="headerlink" title="存量数据如何转移到冷存储"></a>存量数据如何转移到冷存储</h2><p>由于迁移云是用户粒度的迁移，在一个用户的数据被完整的导入另一个区时，先写入DDB，然后根据数据的时间字段，设置TTL，如果是冷数据，将会很快被淘汰到S3中，热数据仍然会保留在DDB中，等待自然冷却。<br>AWS DDB不同于一般的云托管数据库，并不是按资源配置收费，而是按用量收费，主要费用是存储、IOPS和其他分析管理费用，其中写（增删改）单价是读单价的20~40倍。如果不是趁着迁移云时给存量数据设计TTL，迁移后如果再想修改TTL，则相当于对全量数据进行一次写操作，<strong>收费极其昂贵</strong>。<br>事后分析迁移云费用时，发现让历史数据先入DDB再走冷却流程，会耗费DDB写和Lambda费用，后续其他数据中心的云迁移中，对此在进行了优化，在迁移程序中，直接将历史数据中的冷数据部分直接写入S3，由于冷数据占比大，仅此一项，直接节约5成数据迁移费用。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>存储费用高昂，业务上数据冷热特征明显，冷热分离是比较容易想到的常规方案。<br>挑战在于如何在较大数据规模下，如何对用户无感地灰度上线，以及兼顾费用成本、维护成本、改造成本、方案在不同云上的兼容性，综合考虑出一个合理的方案。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
 
 

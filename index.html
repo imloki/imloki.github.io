@@ -177,7 +177,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-03-01 21:58:23" itemprop="dateModified" datetime="2023-03-01T21:58:23+08:00">2023-03-01</time>
+      <time title="Modified: 2023-03-01 22:12:37" itemprop="dateModified" datetime="2023-03-01T22:12:37+08:00">2023-03-01</time>
     </span>
 
   
@@ -193,9 +193,9 @@
           <blockquote>
 <p>整理翻译自 <a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/index.html">https://json-schema.org/understanding-json-schema/index.html</a></p>
 </blockquote>
-<p>JSON Schema是用于验证JSON数据结构的强大工具。但是，通过阅读其文档来学习使用它，就像通过查看蓝图来学习驾驶汽车。如果您要做的就是开车，则无需知道汽车如何装配在一起。因此，本书旨在成为JSON Schema的友好的驾校教练。它适用于那些想要编写和理解它的人，但是对那些想装配自己的汽车（例如，编写自己的JSON Schema验证器）的人并不适用。</p>
+<p><code>JSON Schema</code>是用于验证JSON数据结构的强大工具。但是，通过阅读其文档来学习使用它，就像通过查看蓝图来学习驾驶汽车。如果您要做的就是开车，则无需知道汽车如何装配在一起。因此，本书旨在成为JSON Schema的友好的驾校教练。它适用于那些想要编写和理解它的人，但是对那些想装配自己的汽车（例如，编写自己的JSON Schema验证器）的人并不适用。</p>
 <blockquote>
-<p>本书介绍了JSON Schema草案7。较早的JSON Schema版本与此处描述的格式不完全兼容，但是在大多数情况下，这些区别在文本中有所说明。</p>
+<p>本书介绍了JSON Schema draft7。较早的JSON Schema版本与此处描述的格式不完全兼容，但是在大多数情况下，这些区别在文本中有所说明。</p>
 </blockquote>
 <p><strong>从哪里开始？</strong></p>
 <ul>
@@ -206,17 +206,17 @@
 <li><a target="_blank" rel="noopener" href="https://json-schema.org/">json-schema.org</a>有许多资源，包括用于处理来自各种编程语言的JSON Schema的官方规范和工具。</li>
 <li><a target="_blank" rel="noopener" href="https://jsonschema.net/">jsonschema.net</a>是一个在线应用程序，可对示例文档运行您自己的JSON Schema。如果您想在不安装任何软件的情况下进行尝试，这是非常方便的资源。</li>
 </ul>
-<h1 id="本书中使用的约定"><a href="#本书中使用的约定" class="headerlink" title="本书中使用的约定"></a>本书中使用的约定</h1><h2 id="特定于草稿的注释"><a href="#特定于草稿的注释" class="headerlink" title="特定于草稿的注释"></a><a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/conventions.html#id2">特定于草稿的注释</a></h2><p>JSON Schema标准已经通过了许多修订或“草案”。最重要的是草案7(在撰写本文时的最新版本)和草案4(在此基础上构建了大量的生产软件)，以及本书的早期版本的草案。<br>编写该文档是为了鼓励使用草案7，并优先考虑最新的约定和功能，但是与以前的草案有所不同的是，在特殊标注中突出了这些区别。如果仅希望将目标定为草稿7，则可以放心忽略这些部分。</p>
-<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>本书中有很多示例，并且都遵循相同的格式。每个示例的开头是一个简短的JSON Schema，说明了特定的原理，然后是对该 Schema有效或无效的简短JSON代码段。有效示例为绿色，带有选中标记。无效的示例为带有叉号的红色。通常在两者之间会有注释，以解释某些事物为何有效或无效的原因。<br>例如，以下代码段说明了如何使用该number 类型：</p>
+<h1 id="本书中使用的约定"><a href="#本书中使用的约定" class="headerlink" title="本书中使用的约定"></a>本书中使用的约定</h1><h2 id="针对draft的特别说明"><a href="#针对draft的特别说明" class="headerlink" title="针对draft的特别说明"></a><a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/conventions.html#id2">针对draft的特别说明</a></h2><p>JSON Schema标准已经通过了许多修订或“draft”。最重要的是draft7(在撰写本文时的最新版本)和draft4(在此基础上构建了大量的生产软件)，以及本书的早期版本的draft。<br>编写该文档是为了鼓励使用draft7，并优先考虑最新的约定和功能，但是与以前的draft有所不同的是，在特殊标注中突出了这些区别。如果仅希望将目标定为草稿7，则可以放心忽略这些部分。</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>本书中有很多示例，并且都遵循相同的格式。每个示例的开头是一个简短的JSON Schema，说明了特定的原理，然后是对该 Schema有效或无效的简短JSON代码段。<font color="green">有效示例为绿色</font>，<font color="red">无效的示例为红色</font>，请忽略第一列的+或者-，仅仅是markdown代码块使用diff方式来区分颜色。通常在两者之间会有注释，以解释某些事物为何有效或无效的原因。<br>例如，以下代码段说明了如何使用该number类型：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;number&quot;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <p>整数</p>
 <figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="addition">+ 42</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="addition">+ -1</span></span><br></pre></td></tr></table></figure>
 <p>简单浮点数：</p>
-<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5.0</span><br></pre></td></tr></table></figure>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="addition">+ 5.0</span></span><br></pre></td></tr></table></figure>
 <p>指数表示法也适用：</p>
-<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2.99792458e8</span><br></pre></td></tr></table></figure>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="addition">+ 2.99792458e8</span></span><br></pre></td></tr></table></figure>
 <p>拒绝将数字作为字符串：</p>
 <figure class="highlight diff"><figcaption><span>不匹配schema</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- &quot;42&quot;</span></span><br></pre></td></tr></table></figure>
 
@@ -283,13 +283,13 @@
 <figure class="highlight diff"><figcaption><span>错误示例</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- 42</span></span><br></pre></td></tr></table></figure>
 
 <p>该type关键字在<a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/reference/type.html#type">Type-specific关键字</a>中有更详细的描述。</p>
-<h2 id="声明一个JSON-Schema"><a href="#声明一个JSON-Schema" class="headerlink" title="声明一个JSON Schema"></a>声明一个JSON Schema</h2><p>判断JSON Schema正在使用哪个草案并不总是那么容易。您可以使用$schema关键字来声明将Schema写入哪个版本的JSON Schema规范。有关更多信息，请参见<a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/reference/schema.html#schema">$schema关键字</a>。包括它通常是一个很好的做法，尽管不是必需的。</p>
+<h2 id="声明一个JSON-Schema"><a href="#声明一个JSON-Schema" class="headerlink" title="声明一个JSON Schema"></a>声明一个JSON Schema</h2><p>判断JSON Schema正在使用哪个draft并不总是那么容易。您可以使用<code>$schema</code>关键字来声明将Schema写入哪个版本的JSON Schema规范。有关更多信息，请参见<a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/reference/schema.html#schema">$schema关键字</a>。包括它通常是一个很好的做法，尽管不是必需的。</p>
 <blockquote>
-<p>为简洁起见，$schema本书的大多数示例中并未包含该关键字，但应在现实世界中始终使用该关键字。</p>
+<p>为简洁起见，<code>$schema</code>本书的大多数示例中并未包含该关键字，但应在现实世界中始终使用该关键字。</p>
 </blockquote>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;$schema&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://json-schema.org/draft-07/schema#&quot;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="声明一个唯一的标识符"><a href="#声明一个唯一的标识符" class="headerlink" title="声明一个唯一的标识符"></a>声明一个唯一的标识符</h2><p>最佳做法还包括将$id属性作为每个Schema的唯一标识符。现在，只需将其设置为您控制的域的URL，例如：</p>
+<h2 id="声明一个唯一的标识符"><a href="#声明一个唯一的标识符" class="headerlink" title="声明一个唯一的标识符"></a>声明一个唯一的标识符</h2><p>最佳做法还包括将<code>$id</code>属性作为每个Schema的唯一标识符。现在，只需将其设置为您控制的域的URL，例如：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;$id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://yourdomain.com/schemas/myschema.json&quot;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <p>当您开始<a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/structuring.html#structuring">构建复杂的Schema</a>时，<a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/structuring.html#id">$id属性</a>的细节变得更加明显。</p>
 <h1 id="JSON-Schema参考"><a href="#JSON-Schema参考" class="headerlink" title="JSON Schema参考"></a>JSON Schema参考</h1><h2 id="特定类型的关键字"><a href="#特定类型的关键字" class="headerlink" title="特定类型的关键字"></a>特定类型的关键字</h2><p>该<strong>type</strong>关键字是JSON Schema的基础。它指定Schema的数据类型。<br>JSON Schema的核心定义了以下基本类型：</p>
@@ -363,7 +363,7 @@
 </ul>
 <h5 id="主机名"><a href="#主机名" class="headerlink" title="主机名"></a>主机名</h5><ul>
 <li><code>&quot;hostname&quot;</code>：Internet主机名，请参阅RFC 1034第3.1节。</li>
-<li><code>&quot;idn-hostname&quot;</code>：草案7中的新增内容国际化的Internet主机名，请参阅 RFC5890第2.3.2.3节。</li>
+<li><code>&quot;idn-hostname&quot;</code>：draft7中的新增内容国际化的Internet主机名，请参阅 RFC5890第2.3.2.3节。</li>
 </ul>
 <h5 id="IP地址"><a href="#IP地址" class="headerlink" title="IP地址"></a>IP地址</h5><ul>
 <li><code>&quot;ipv4&quot;</code>：IPv4地址，根据RFC 2673第3.2节中定义的点分四进制ABNF语法。</li>
@@ -371,19 +371,19 @@
 </ul>
 <h5 id="资源标识符"><a href="#资源标识符" class="headerlink" title="资源标识符"></a>资源标识符</h5><ul>
 <li><code>&quot;uri&quot;</code>：根据RFC3986的通用资源标识符（URI） 。</li>
-<li><code>&quot;uri-reference&quot;</code>：草案6中的新增内容URI参考（URI或相对参考），根据RFC3986，第4.1节。</li>
-<li><code>&quot;iri&quot;</code>：草案7中的新增内容，根据RFC3987，“ uri”的国际化等效项。</li>
-<li><code>&quot;iri-reference&quot;</code>：草案7中的新增内容，根据RFC3987，“ uri-reference”的国际化等效项<br>如果Schema中的值具有相对于特定源路径（例如，来自网页的链接）的能力，则通常更好的做法是使用 “uri-reference”（或”iri-reference”）而不是”uri”（或 “iri”）。”uri”仅在路径必须为绝对路径时才应使用。</li>
+<li><code>&quot;uri-reference&quot;</code>：draft6中的新增内容URI参考（URI或相对参考），根据RFC3986，第4.1节。</li>
+<li><code>&quot;iri&quot;</code>：draft7中的新增内容，根据RFC3987，“ uri”的国际化等效项。</li>
+<li><code>&quot;iri-reference&quot;</code>：draft7中的新增内容，根据RFC3987，“ uri-reference”的国际化等效项<br>如果Schema中的值具有相对于特定源路径（例如，来自网页的链接）的能力，则通常更好的做法是使用 “uri-reference”（或”iri-reference”）而不是”uri”（或 “iri”）。”uri”仅在路径必须为绝对路径时才应使用。</li>
 </ul>
 <h5 id="URI模板"><a href="#URI模板" class="headerlink" title="URI模板"></a>URI模板</h5><ul>
-<li><code>&quot;uri-template&quot;</code>：草案6中的新内容根据RFC6570的URI模板（任何级别） 。如果您还不知道URI模板是什么，则可能不需要此值。</li>
+<li><code>&quot;uri-template&quot;</code>：draft6中的新内容根据RFC6570的URI模板（任何级别） 。如果您还不知道URI模板是什么，则可能不需要此值。</li>
 </ul>
 <h5 id="JSON指针"><a href="#JSON指针" class="headerlink" title="JSON指针"></a>JSON指针</h5><ul>
-<li><code>&quot;json-pointer&quot;</code>：根据RFC6901 ，草案6 A JSON指针中的新增内容。在构造复杂的Schema时，将有更多关于JSON指针在JSONSchema中使用的讨论。请注意，仅当整个字符串仅包含JSON指针内容时，才应使用此属性 &#x2F;foo&#x2F;bar。JSON指针URI片段，例如#&#x2F;foo&#x2F;bar&#x2F;应使用 “uri-reference”。</li>
-<li><code>&quot;relative-json-pointer&quot;</code>：草案7中的新增内容相对JSON指针。</li>
+<li><code>&quot;json-pointer&quot;</code>：根据RFC6901 ，draft6 A JSON指针中的新增内容。在构造复杂的Schema时，将有更多关于JSON指针在JSONSchema中使用的讨论。请注意，仅当整个字符串仅包含JSON指针内容时，才应使用此属性 &#x2F;foo&#x2F;bar。JSON指针URI片段，例如#&#x2F;foo&#x2F;bar&#x2F;应使用 “uri-reference”。</li>
+<li><code>&quot;relative-json-pointer&quot;</code>：draft7中的新增内容相对JSON指针。</li>
 </ul>
 <h5 id="正则表达式-1"><a href="#正则表达式-1" class="headerlink" title="正则表达式"></a>正则表达式</h5><ul>
-<li><code>&quot;regex&quot;</code>：草案7中的新增内容一个正则表达式，根据ECMA 262 方言应有效。<blockquote>
+<li><code>&quot;regex&quot;</code>：draft7中的新增内容一个正则表达式，根据ECMA 262 方言应有效。<blockquote>
 <p>请注意，在实践中，JSON Schema验证器只需要接受本文档其他地方描述的正则表达式的安全子集。</p>
 </blockquote>
 </li>
@@ -551,7 +551,7 @@
 <figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- &#123;</span></span><br><span class="line"><span class="deletion">-   &quot;name&quot;: &quot;William Shakespeare&quot;,</span></span><br><span class="line"><span class="deletion">-   &quot;address&quot;: &quot;Henley Street, Stratford-upon-Avon, Warwickshire, England&quot;,</span></span><br><span class="line"><span class="deletion">- &#125;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="属性名称"><a href="#属性名称" class="headerlink" title="属性名称"></a>属性名称</h3><blockquote>
-<p>草案6的新功能</p>
+<p>draft6的新功能</p>
 </blockquote>
 <p>可以根据Schema验证属性的名称，而不管其值如何。如果您不想强制使用特定的属性，但是要确保这些属性的名称遵循特定的约定，这将很有用。例如，您可能想要强制所有名称都是有效的ASCII令牌，以便可以将它们用作特定编程语言中的属性。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;object&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;propertyNames&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;pattern&quot;</span><span class="punctuation">:</span> <span class="string">&quot;^[A-Za-z_][A-Za-z0-9_]*$&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
@@ -764,11 +764,11 @@
 <figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- </span></span><br></pre></td></tr></table></figure>
 
 <h2 id="通用关键字"><a href="#通用关键字" class="headerlink" title="通用关键字"></a>通用关键字</h2><p>本章列出了一些可用于所有JSON类型的其他属性。</p>
-<h3 id="注解Annotations"><a href="#注解Annotations" class="headerlink" title="注解Annotations"></a>注解Annotations</h3><p>JSON模式包含一些关键字，这些关键字并非严格用于验证，而是用于描述模式的各个部分。这些“注释”关键字都不是必需的，但鼓励您进行良好的实践，它们可以使您的模式“<strong>自我描述</strong>”。<br>在<code>title</code>和<code>description</code>关键字必须是字符串。“标题”将优选为简短的，而“描述”将提供有关该模式描述的数据的目的的更冗长的解释。<br><code>default</code>关键字指定一个默认值。在验证过程中，不会使用此值来填写缺少的值。非验证工具（例如文档生成器或表单生成器）可能会使用此值来向用户提示如何使用该值。但是，default通常用于表示如果缺少某个值，则该值在语义上与该值存在默认值时相同。default 应针对其所在的Schema进行验证，但这不是必需的。<br>草案6中的新增内容。<code>examples</code>关键字是用于提供一系列针对该Schema进行验证的示例。这不用于验证，但是可以帮助向读者解释该Schema的效果和目的。每个条目都应根据其所在的Schema进行验证，但这不是严格要求的。不需要在examples数组复制default值，因为default将作为另一个示例。<br>草案7中的新增内容。布尔关键字<code>readOnly</code>，<code>writeOnly</code>通常在API上下文中使用。readOnly指示不应修改值。它可以用来指示更改某个值的PUT请求将导致400 Bad request响应。writeOnly表示可以设置一个值，但将保持隐藏状态。writeOnly可以用来表示您可以在请求中设置一个值，但是不要通过GET请求检索该记录。</p>
+<h3 id="注解Annotations"><a href="#注解Annotations" class="headerlink" title="注解Annotations"></a>注解Annotations</h3><p>JSON模式包含一些关键字，这些关键字并非严格用于验证，而是用于描述模式的各个部分。这些“注释”关键字都不是必需的，但鼓励您进行良好的实践，它们可以使您的模式“<strong>自我描述</strong>”。<br>在<code>title</code>和<code>description</code>关键字必须是字符串。“标题”将优选为简短的，而“描述”将提供有关该模式描述的数据的目的的更冗长的解释。<br><code>default</code>关键字指定一个默认值。在验证过程中，不会使用此值来填写缺少的值。非验证工具（例如文档生成器或表单生成器）可能会使用此值来向用户提示如何使用该值。但是，default通常用于表示如果缺少某个值，则该值在语义上与该值存在默认值时相同。default 应针对其所在的Schema进行验证，但这不是必需的。<br>draft6中的新增内容。<code>examples</code>关键字是用于提供一系列针对该Schema进行验证的示例。这不用于验证，但是可以帮助向读者解释该Schema的效果和目的。每个条目都应根据其所在的Schema进行验证，但这不是严格要求的。不需要在examples数组复制default值，因为default将作为另一个示例。<br>draft7中的新增内容。布尔关键字<code>readOnly</code>，<code>writeOnly</code>通常在API上下文中使用。readOnly指示不应修改值。它可以用来指示更改某个值的PUT请求将导致400 Bad request响应。writeOnly表示可以设置一个值，但将保持隐藏状态。writeOnly可以用来表示您可以在请求中设置一个值，但是不要通过GET请求检索该记录。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Match anything&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;This is a schema that matches anything.&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;default&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Default value&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;examples&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;Anything&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="number">4035</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;readOnly&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;writeOnly&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="注释Comments"><a href="#注释Comments" class="headerlink" title="注释Comments"></a>注释Comments</h3><blockquote>
-<p>草案7的新功能<code>$comment</code></p>
+<p>draft7的新功能<code>$comment</code></p>
 </blockquote>
 <p><code>$comment</code>关键字是严格用于向Schema添加注释。它的值必须始终是一个字符串。与注解title，description和examples不同，JSON模式实现不允许在其上附加任何含义或行为，甚至可以随时剥离它们。因此，它们对于将注释留给JSON模式的未来编辑者很有用，但不应用于与模式用户进行通信。</p>
 <h3 id="枚举值"><a href="#枚举值" class="headerlink" title="枚举值"></a>枚举值</h3><p><code>enum</code>关键字被用于限制值，以一个固定的一组值。它必须是一个至少包含一个元素的数组，其中每个元素都是唯一的。<br>以下是验证路灯颜色的示例：</p>
@@ -786,7 +786,7 @@
 <figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- 0</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><blockquote>
-<p>草案6的新功能</p>
+<p>draft6的新功能</p>
 </blockquote>
 <p><code>const</code>关键字被用于限制值，必须是单一的值。<br>例如，如果您仅出于出口原因支持运送到美国：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;properties&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;country&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;const&quot;</span><span class="punctuation">:</span> <span class="string">&quot;United States of America&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
@@ -795,7 +795,7 @@
 <figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- &#123; &quot;country&quot;: &quot;Canada&quot; &#125;</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="Media：字符串编码的非JSON数据"><a href="#Media：字符串编码的非JSON数据" class="headerlink" title="Media：字符串编码的非JSON数据"></a>Media：字符串编码的非JSON数据</h2><blockquote>
-<p>草案7的新功能</p>
+<p>draft7的新功能</p>
 </blockquote>
 <p>JSON Schema具有一组关键字来描述和可选地验证存储在JSON字符串中的非JSON数据。由于很难为多种媒体类型编写验证器，因此不需要JSON模式验证器来基于这些关键字验证JSON字符串的内容。但是，这些关键字对于使用经过验证的JSON的应用程序仍然有用。</p>
 <h3 id="contentMediaType"><a href="#contentMediaType" class="headerlink" title="contentMediaType"></a>contentMediaType</h3><p><code>contentMediaType</code>关键字指定的MIME类型的字符串的内容，如在RFC 2046。有一个IANA正式注册的MIME类型列表，但是受支持的类型集将取决于应用程序和操作系统。Mozilla开发人员网络还维护了一个<a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types">简短的MIME类型列表</a>。</p>
@@ -880,7 +880,7 @@
 <figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">- &quot;I am a string&quot;</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="子模式条件判断"><a href="#子模式条件判断" class="headerlink" title="子模式条件判断"></a>子模式条件判断</h2><p>这里属于高阶用法，实践中不建议使用过于复杂的Schema。有兴趣可以访问<a target="_blank" rel="noopener" href="https://json-schema.org/understanding-json-schema/reference/conditionals.html">原文</a>。</p>
-<h2 id="schema关键字"><a href="#schema关键字" class="headerlink" title="$ schema关键字"></a>$ schema关键字</h2><p><code>$schema</code>关键字被用于声明一个JSON片段实际上是一块JSON Schema的。它还声明了针对该Schema编写的JSON Schema标准版本。<br>建议所有JSON模式都<code>$schema</code>必须有一个条目，该条目必须位于根目录下。因此，在大多数情况下，您会希望这是Schema的根条目：<br><code>&quot;$schema&quot;: &quot;http://json-schema.org/draft/2019-09/schema#&quot;</code></p>
+<h2 id="schema关键字"><a href="#schema关键字" class="headerlink" title="$schema关键字"></a>$schema关键字</h2><p><code>$schema</code>关键字被用于声明一个JSON片段实际上是一块JSON Schema的。它还声明了针对该Schema编写的JSON Schema标准版本。<br>建议所有JSON模式都<code>$schema</code>必须有一个条目，该条目必须位于根目录下。因此，在大多数情况下，您会希望这是Schema的根条目：<br><code>&quot;$schema&quot;: &quot;http://json-schema.org/draft/2019-09/schema#&quot;</code></p>
 <blockquote>
 <p>尽管官方建议显式声明schema版本，以便验证器知道使用何种版本校验。但实际我们在使用中统一使用draft7，即使声明了其他版本draft也会报错。所以<font color="blue">建议不声明$schema</font>。</p>
 </blockquote>
@@ -925,7 +925,7 @@
 <p>上面，我们创建了一个引用自身另一部分的Schema，从而有效地在验证器中创建了一个“循环”，这既是允许的，也是有用的。但是请注意，相互<code>$ref</code>引用的Schema循环可能会在解析器中引起无限循环，因此明确不允许这样做。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- <span class="punctuation">&#123;</span></span><br><span class="line">-   <span class="attr">&quot;definitions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">-     <span class="attr">&quot;alice&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">-       <span class="attr">&quot;anyOf&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">-         <span class="punctuation">&#123;</span> <span class="attr">&quot;$ref&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#/definitions/bob&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">-       <span class="punctuation">]</span></span><br><span class="line">-     <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">-     <span class="attr">&quot;bob&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">-       <span class="attr">&quot;anyOf&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">-         <span class="punctuation">&#123;</span> <span class="attr">&quot;$ref&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#/definitions/alice&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">-       <span class="punctuation">]</span></span><br><span class="line">-     <span class="punctuation">&#125;</span></span><br><span class="line">-   <span class="punctuation">&#125;</span></span><br><span class="line">- <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="在-id属性"><a href="#在-id属性" class="headerlink" title="在$ id属性"></a>在$ id属性</h2><p>该<code>$id</code>属性是一个URI引用，有两个用途：</p>
+<h2 id="在-id属性"><a href="#在-id属性" class="headerlink" title="在$id属性"></a>在$id属性</h2><p>该<code>$id</code>属性是一个URI引用，有两个用途：</p>
 <ul>
 <li>它为模式声明了唯一的标识符。</li>
 <li>它声明一个基础URI，可以根据该基础URI$ref引用进行解析。</li>
@@ -936,7 +936,7 @@
 <p>这为Schema提供了唯一的标识符，并且在大多数情况下，还可以指示哪里可以下载Schema。<br>但是请注意该<code>$id</code>属性的第二个用途：它为<code>$ref</code>文件中其他位置的URI引用声明一个基本URI 。例如，如果您有：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> <span class="attr">&quot;$ref&quot;</span><span class="punctuation">:</span> <span class="string">&quot;person.json&quot;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
-<p>在同一文件中，支持网络加载的JSON模式验证库可以从<a target="_blank" rel="noopener" href="http://foo.bar/schemas/person.json">http://foo.bar/schemas/person.json</a>加载person.json，甚至可以从别的地方加载address.json，例如本地文件系统。草案并未非常明确地定义行为的这一领域，验证器的实现可以尝试探索<code>$ref</code>的多种用法。<br>该<code>$id</code>属性绝不能为空字符串或空片段（<code>#</code>），因为这实际上没有任何意义。</p>
+<p>在同一文件中，支持网络加载的JSON模式验证库可以从<a target="_blank" rel="noopener" href="http://foo.bar/schemas/person.json">http://foo.bar/schemas/person.json</a>加载person.json，甚至可以从别的地方加载address.json，例如本地文件系统。draft并未非常明确地定义行为的这一领域，验证器的实现可以尝试探索<code>$ref</code>的多种用法。<br>该<code>$id</code>属性绝不能为空字符串或空片段（<code>#</code>），因为这实际上没有任何意义。</p>
 <h3 id="将-id与-ref一起使用"><a href="#将-id与-ref一起使用" class="headerlink" title="将$id与$ref一起使用"></a>将$id与$ref一起使用</h3><p><code>$id</code>还提供了一种无需使用JSON指针即可引用子模式的方法。这意味着您可以通过唯一的名称来引用它们，而不是通过它们在JSON树中出现的位置来引用。<br>重用上面的地址示例，我们可以将一个<code>$id</code>属性添加到地址Schema，然后通过该属性引用它。</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;$schema&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http://json-schema.org/draft-07/schema#&quot;</span><span class="punctuation">,</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">&quot;definitions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;$id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#address&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;object&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;properties&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;street_address&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;city&quot;</span><span class="punctuation">:</span>           <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;state&quot;</span><span class="punctuation">:</span>          <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;required&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;street_address&quot;</span><span class="punctuation">,</span> <span class="string">&quot;city&quot;</span><span class="punctuation">,</span> <span class="string">&quot;state&quot;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;object&quot;</span><span class="punctuation">,</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">&quot;properties&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;billing_address&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;$ref&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#address&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;shipping_address&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;$ref&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#address&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"guyver.icu","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="背景 通过产线一例redis内存持续增长的问题，引出redis常用的分析手段。  我们对redis的内存占用做了90%阈值告警，近期redis常常告警内存不足，担心可能是业务变更导致redis使用不当带来的问题，先让工效同学先扩容，抽时间来分析一下。 分析过程收到的是印度区告警，打开监控，redis主从方式部署，过去一个月来内存占用率慢慢上升，确定不是近期业务变更带来的紧急变化。 根据redis实">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis内存上涨分析">
+<meta property="og:url" content="https://guyver.icu/2023/03/07/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Guyver&#39;s Blogs">
+<meta property="og:description" content="背景 通过产线一例redis内存持续增长的问题，引出redis常用的分析手段。  我们对redis的内存占用做了90%阈值告警，近期redis常常告警内存不足，担心可能是业务变更导致redis使用不当带来的问题，先让工效同学先扩容，抽时间来分析一下。 分析过程收到的是印度区告警，打开监控，redis主从方式部署，过去一个月来内存占用率慢慢上升，确定不是近期业务变更带来的紧急变化。 根据redis实">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://guyver.icu/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-18-51-23.png">
+<meta property="og:image" content="https://guyver.icu/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-04-00.png">
+<meta property="og:image" content="https://guyver.icu/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-05-40.png">
+<meta property="og:image" content="https://guyver.icu/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-11-49.png">
+<meta property="og:image" content="https://guyver.icu/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-34-39.png">
+<meta property="og:image" content="https://guyver.icu/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-37-26.png">
+<meta property="og:image" content="https://guyver.icu/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-39-45.png">
+<meta property="og:image" content="https://guyver.icu/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-18-39-11.png">
+<meta property="article:published_time" content="2023-03-07T13:01:40.000Z">
+<meta property="article:modified_time" content="2023-03-07T13:10:33.062Z">
+<meta property="article:author" content="Guyver">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guyver.icu/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-18-51-23.png">
+
+
+<link rel="canonical" href="https://guyver.icu/2023/03/07/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://guyver.icu/2023/03/07/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/","path":"2023/03/07/redis内存上涨分析/","title":"redis内存上涨分析"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>redis内存上涨分析 | Guyver's Blogs</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Guyver's Blogs</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E8%BF%87%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">分析过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BB%B6%E4%BC%B8"><span class="nav-number">4.</span> <span class="nav-text">延伸</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8rdb%E5%88%86%E6%9E%90"><span class="nav-number">4.1.</span> <span class="nav-text">为什么要使用rdb分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E5%9C%BA%E6%99%AF%E8%BF%98%E9%9C%80%E8%A6%81rdb"><span class="nav-number">4.2.</span> <span class="nav-text">什么场景还需要rdb</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rdb%E5%88%86%E6%9E%90%E7%BB%B4%E5%BA%A6%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="nav-number">4.3.</span> <span class="nav-text">rdb分析维度有哪些</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7"><span class="nav-number">4.4.</span> <span class="nav-text">分析工具</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Guyver</p>
+  <div class="site-description" itemprop="description">没有困难的任务，只有勇敢的狗狗</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://guyver.icu/2023/03/07/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Guyver">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Guyver's Blogs">
+      <meta itemprop="description" content="没有困难的任务，只有勇敢的狗狗">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="redis内存上涨分析 | Guyver's Blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          redis内存上涨分析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2023-03-07 21:01:40 / Modified: 21:10:33" itemprop="dateCreated datePublished" datetime="2023-03-07T21:01:40+08:00">2023-03-07</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><blockquote>
+<p>通过产线一例redis内存持续增长的问题，引出redis常用的分析手段。</p>
+</blockquote>
+<p>我们对redis的内存占用做了90%阈值告警，近期redis常常告警内存不足，担心可能是业务变更导致redis使用不当带来的问题，先让工效同学先扩容，抽时间来分析一下。</p>
+<h1 id="分析过程"><a href="#分析过程" class="headerlink" title="分析过程"></a>分析过程</h1><p><img src="/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-18-51-23.png"><br>收到的是印度区告警，打开监控，redis主从方式部署，过去一个月来内存占用率慢慢上升，确定不是近期业务变更带来的紧急变化。</p>
+<p>根据redis实例名，反向检索配置中心，很快定位到了该redis被多个服务所引用过，检查下这些服务这个月前后提交的代码，没有发现可能导致redis变化的commit提交记录。</p>
+<p>查看其它区的对应redis实例监控，发现都有类似情况，一个月内慢慢增长，初步判断是同一个原因导致，选择其中内存占用最大的德国区进行分析。</p>
+<p>下一步分析redis内的数据，联系工效同学导出一份产线RDB文件，这里采用了Redis Insight工具分析。</p>
+<blockquote>
+<p>其他推荐的分析工具还有rdbtools,Redis Desktop Manager,分析思路都一样，查看过期时间、不同类型和不同前缀的Key分布。</p>
+</blockquote>
+<p><img src="/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-04-00.png"><br><img src="/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-05-40.png"><br>zset类型数据的数量最多，内存占用也最多，数据expire主要分布在1~7天。永不过期数据只有22MB，和本次分析无关。重点分析zset类型数据。<br><img src="/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-11-49.png"><br>Keyspace Summary可以聚合出一些Key Summary，但实用价值不大，没有分析出占比Top Key<br><img src="/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-34-39.png"><br><img src="/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-37-26.png"><br>Memory Analyzer提供了高级检索和统计功能，这里过滤出zset集合数据，发现大量的Event开头的数据<br><img src="/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-20-39-45.png"><br>继续检索，这里的搜索框是key模式匹配，<code>Event*</code>匹配后发现仅有386M，不是主要组成，但由于模式匹配不支持正则中的负向前瞻，没法排除掉<code>Event*</code>继续分析。<br>这里实际业务场景下，多试几次就可以凭借经验找到占比Top Key，但这里为了全面分析，换个工具。</p>
+<p>取前N位前缀进行分组聚合，查看每组的Total Memory和Total Keys。这里我们使用rdbtools将rdb数据转成csv文本，再用awk工具分析。</p>
+<p>安装rdbtools，将rdb内数据解析到csv中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rdb -c memory xxx.rdb -f xxx.csv</span><br></pre></td></tr></table></figure>
+<p>再截取前6位前缀做分组聚合</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F, <span class="string">&#x27;&#123;counts[substr($3,1,6)]+=$4 ; sum+=$4&#125;; END &#123;for(it in counts) print counts[it],counts[it] *100/sum,it&#125;&#x27;</span> xxx.csv |<span class="built_in">sort</span> -nr|<span class="built_in">head</span> -20</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，<code>udbd_</code>占比最高，其次是<code>Event-</code>，反查代码，发现两者都是防重传业</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">1546527810 89.3992 ucbd_3</span><br><span class="line">161376822 9.32861 Event-</span><br><span class="line">5753061 0.332564 D-m-30</span><br><span class="line">4316568 0.249525 H-m-30</span><br><span class="line">3842590 0.222126 D-z-30</span><br><span class="line">3619412 0.209225 H-z-30</span><br><span class="line">1262919 0.0730048 ucbd_5</span><br><span class="line">1165892 0.067396 ucbd_7</span><br><span class="line">1134369 0.0655738 S-m-30</span><br><span class="line">620062 0.0358435 ucbd_1</span><br><span class="line">217011 0.0125446 S-z-30</span><br><span class="line">38613 0.00223208 D-com.</span><br><span class="line">14213 0.000821602 H-com.</span><br><span class="line">5709 0.000330017 D-m-50</span><br><span class="line">3658 0.000211456 S-m-50</span><br><span class="line">2610 0.000150875 H-m-50</span><br><span class="line">1794 0.000103705 D-m-10</span><br><span class="line">1662 9.60742e-05 ucbd_8</span><br><span class="line">1575 9.1045e-05 S-m-10</span><br><span class="line">1377 7.95994e-05 D-z-50</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，<code>udbd_</code>占比最高，其次是<code>Event-</code>，反查代码，发现两者都是防重传业务使用。</p>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>防重传业务，是因为APP上传数据时，因为各种原因可能存在重传情况，重传也基本都是近期数据，这里对每次上传的数据指纹进行记录，下一次同步时发现指纹相同则认为重复上传，不再落库，减少对数据库的调用，节约资源也降低了数据库费用。<br>redis缓存的数据指纹时间越长，效果越好。当年Redis内存打满后，设置好内存淘汰策略即可。</p>
+<ul>
+<li>noeviction：直接返回错误，不淘汰任何已经存在的redis键</li>
+<li>allkeys-lru：所有的键使用lru算法进行淘汰</li>
+<li>volatile-lru：有过期时间的使用lru算法进行淘汰</li>
+<li>allkeys-random：随机删除redis键</li>
+<li>volatile-random：随机删除有过期时间的redis键</li>
+<li>volatile-ttl：删除快过期的redis键</li>
+<li>volatile-lfu：根据lfu算法从有过期时间的键删除</li>
+<li>allkeys-lfu：根据lfu算法从所有键删除</li>
+</ul>
+<p>防重传业务，理论上时间越久的数据重传可能性越低，可以考虑<code>volatile-ttl</code>，但另一方面，从用户活跃来看，活跃的用户可能短时间内会一直活跃，也可以考虑<code>volatile-lfu</code>，按实际效果评估对数据库最友好的一种策略即可。<br><img src="/images/redis%E5%86%85%E5%AD%98%E4%B8%8A%E6%B6%A8%E5%88%86%E6%9E%90/2023-03-02-18-39-11.png"></p>
+<h1 id="延伸"><a href="#延伸" class="headerlink" title="延伸"></a>延伸</h1><h2 id="为什么要使用rdb分析"><a href="#为什么要使用rdb分析" class="headerlink" title="为什么要使用rdb分析"></a>为什么要使用rdb分析</h2><p>分析redis产线问题时，分析监控指标，一个重要的手段是对内部数据进行分析，扫描数据有以下几种方式</p>
+<ol>
+<li><code>keys</code>命令，简单粗暴，但不支持翻页，在redis单线程下，容易阻塞主线程，复杂度是 O(n），Redis库中的key越多，查找实现代价越大，产生的阻塞时间越长，不推荐使用。</li>
+<li><code>scan</code>命令，复杂度同样是O(n)，但通过限制翻页条数不阻塞主线程，原理是redis底层是类hash结构，由一维数组+链表组成，scan遍历的其实是数组，所以要注意并不是每一页都有结果，需要翻到没有下一页为止，而且数组扩缩容时，可能数据会重复。自己可以写脚本去scan数据，但比较麻烦。</li>
+<li><code>AOF</code>(Append Only File)，将每次数据修改操作记录append到日志文件中，记录的是命令，日志较大，每隔一段时间会进行rewrite操作（命令之间整合、抵消等），不易丢数据，但恢复慢。</li>
+<li><code>RDB</code>(Redis Database)，父进程fork一个子进程 copy on write，不会阻塞父进程对外提供服务，除非数据集超大且CPU性能不好，可能会影响主进程。RDB文件小恢复快，但创建RDB耗时长，适合做备份，但不适合频繁创建rdb快照，一般会结合AOF一起做备份功能，可以将数据丢失可能性降到最低。</li>
+</ol>
+<blockquote>
+<p>Redis persistence详见<a target="_blank" rel="noopener" href="https://redis.io/docs/management/persistence/">官方文档</a></p>
+</blockquote>
+<p>根据以上特点分析，不需要最新数据，RDB文件小，恢复快，不会阻塞父进程，如果没有历史备份复用，数据集又超大，必须临时导出，可以使用redis从节点导出。</p>
+<h2 id="什么场景还需要rdb"><a href="#什么场景还需要rdb" class="headerlink" title="什么场景还需要rdb"></a>什么场景还需要rdb</h2><p>大key分析、数据备份、内存占用高、数据迁移前后比对、性能分析（较多使用复杂类型数据）</p>
+<h2 id="rdb分析维度有哪些"><a href="#rdb分析维度有哪些" class="headerlink" title="rdb分析维度有哪些"></a>rdb分析维度有哪些</h2><p>RDB分析是分析redis内数据，其他运行时状态使用在线Metric监控查看。<br>可分析维度有：</p>
+<ol>
+<li>不同类型数据的内存占用和数量</li>
+<li>过期时间分析，不同时间段和永不过期数据</li>
+<li>空闲时间分析，观察哪些数据较长时间无人访问</li>
+<li>前缀分析，一般业务非独享，会给Key设置业务前缀，避免重复，也方便使用和分析</li>
+</ol>
+<h2 id="分析工具"><a href="#分析工具" class="headerlink" title="分析工具"></a>分析工具</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/RedisInsight/RedisDesktopManager">Redis Desktop Manager</a>：跨平台的Redis管理工具，支持多平台，提供了一个直观的图形界面，可以用于查看和编辑Redis的键值对数据，以及导入和导出RDB文件。目前官方网站直接推荐RedisInsight。</li>
+<li><a target="_blank" rel="noopener" href="https://rdbtools.com/">rdbtools</a>：Python实现，支持命令行，也可以作为python库编写脚本，配合pandas、numpy、matplotlib等库，对Redis中的数据进行分析和可视化展示。目前官方网站直接推荐RedisInsight。</li>
+<li><a target="_blank" rel="noopener" href="https://redis.com/redis-enterprise/redis-insight/">RedisInsight</a>：开源的Redis GUI工具，支持多平台，已更新到V2版本，提供了对Redis数据的可视化管理和监控功能，并支持导入和分析RDB文件。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/junegunn/redis-stat">redis-stat</a>：基于命令行的Redis性能分析工具，Ruby实现，支持分析Redis的性能指标、命令、key分布等，支持导入RDB文件进行分析。</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/sripathikrishnan/redis-rdb-tools#redis-rdb-cli">redis-rdb-cli</a>：基于命令行的RDB分析工具，Python实现，支持解析rdb文件，内存分析和将rdb转成json。</li>
+</ul>
+<blockquote>
+<p>如果工具分析不够灵活，可以将RDB数据解析出来，然后使用awk、grep或者python脚本等方式去手动分析。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/28/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JSON-Schema/" rel="prev" title="深入理解JSON Schema">
+                  <i class="fa fa-chevron-left"></i> 深入理解JSON Schema
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Guyver</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
